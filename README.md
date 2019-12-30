@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/geracimov/otus-java-2019.svg?branch=master)](https://travis-ci.org/geracimov/otus-java-2019)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/25f600b185944c2f89fd63e85303559b)](https://www.codacy.com/manual/geracimov/otus-java-2019?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=geracimov/otus-java-2019&amp;utm_campaign=Badge_Grade)
+
 # Otus-java-2019-12
 Java developer course by OTUS
 
