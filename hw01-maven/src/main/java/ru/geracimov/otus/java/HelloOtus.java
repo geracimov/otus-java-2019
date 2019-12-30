@@ -3,7 +3,7 @@ package ru.geracimov.otus.java;
 import ru.geracimov.otus.java.utils.IntUtils;
 import ru.geracimov.otus.java.utils.IntUtilsGuavaImpl;
 
-public class Hw01MavenApplication {
+public class HelloOtus {
 
     public static void main(String[] args) {
         if (args.length == 0)

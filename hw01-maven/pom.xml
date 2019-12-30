@@ -45,7 +45,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>ru.geracimov.otus.java.Hw01MavenApplication</mainClass>
+                            <mainClass>ru.geracimov.otus.java.HelloOtus</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
