@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 @DisplayName("Реализация DIYarrayList")
 class DIYarrayListTest {
@@ -17,6 +18,14 @@ class DIYarrayListTest {
         DIYarrayList<String> strings = new DIYarrayList<>();
         assertThat(strings.size()).isEqualTo(0);
         assertThat(strings.isEmpty()).isEqualTo(true);
+    }
+
+    @Test
+    @DisplayName("Бросает исключение при инициализации списка с отрицательным размером")
+    void initListSizeNegativeSizeTest() {
+        assertThatIllegalArgumentException().isThrownBy(() -> {
+            DIYarrayList<String> strings = new DIYarrayList<>(-1);
+        }).withMessageMatching("Size must be positive");
     }
 
     @Test
@@ -38,7 +47,7 @@ class DIYarrayListTest {
         int[] dst = new int[src.length * 2];
         System.out.println(Arrays.toString(Arrays.copyOf(src, 4)));
         System.arraycopy(src, 0, dst, 0, src.length);
-        dst[src.length]=99;
+        dst[src.length] = 99;
         System.out.println(Arrays.toString(dst));
     }
 }
