@@ -91,13 +91,12 @@ public final class DIYarrayList<T> implements List<T> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T remove(int index) {
-        final Object element = elements[index];
+        T element = getElement(index);
         System.arraycopy(elements, index + 1, elements, index, size - index - 1);
         elements[size - 1] = null;
         size--;
-        return (T) element;
+        return element;
     }
 
     @Override
@@ -139,18 +138,16 @@ public final class DIYarrayList<T> implements List<T> {
         size = 0;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public T get(int index) {
-        if (index < 0 || index > size - 1) {
-            throw new IndexOutOfBoundsException(String.format("Index: %d, Size: %d", index, size));
-        }
-        return (T) elements[index];
+        return getElement(index);
     }
 
     @Override
     public T set(int index, T element) {
-        return null;
+        T old = getElement(index);
+        elements[index] = element;
+        return old;
     }
 
 
@@ -182,22 +179,17 @@ public final class DIYarrayList<T> implements List<T> {
 
     @Override
     public ListIterator<T> listIterator() {
-        throw new UnsupportedOperationException();
+        return new DIYlistIterator();
     }
 
 
     @Override
     public Iterator<T> iterator() {
-        throw new UnsupportedOperationException();
+        return new DIYiterator();
     }
 
     @Override
     public ListIterator<T> listIterator(int index) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Spliterator<T> spliterator() {
         throw new UnsupportedOperationException();
     }
 
@@ -216,6 +208,14 @@ public final class DIYarrayList<T> implements List<T> {
         return sb.append("}").toString();
     }
 
+    private T getElement(int index) {
+        if (index < 0 || index > size - 1) {
+            throw new IndexOutOfBoundsException(String.format("Index: %d, Size: %d", index, size));
+        }
+        //noinspection unchecked
+        return (T) elements[index];
+    }
+
     private void increase(float factor) {
         if (factor <= 1.0) {
             throw new IllegalArgumentException(String.format("Factor %f must be greater then 1.0", factor));
@@ -225,6 +225,77 @@ public final class DIYarrayList<T> implements List<T> {
         Object[] newElements = new Object[newSize];
         System.arraycopy(elements, 0, newElements, 0, elements.length);
         elements = newElements;
+    }
+
+    private class DIYiterator implements Iterator<T> {
+        int cursor;
+        int returned = -1;
+
+        DIYiterator() {
+        }
+
+        @Override
+        public boolean hasNext() {
+            return cursor != size;
+        }
+
+        @Override
+        public T next() {
+            if (cursor >= size) {
+                throw new NoSuchElementException();
+            }
+            returned = cursor++;
+
+            //noinspection unchecked
+            return (T) elements[returned];
+        }
+
+        @Override
+        public void remove() {
+            Iterator.super.remove();
+        }
+    }
+
+    private class DIYlistIterator extends DIYiterator implements ListIterator<T> {
+
+        DIYlistIterator() {
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return cursor > 0;
+        }
+
+        @Override
+        public T previous() {
+            if (hasPrevious()) {
+                cursor--;
+                //noinspection unchecked
+                return (T) elements[cursor];
+            }
+            throw new NoSuchElementException();
+        }
+
+        @Override
+        public int nextIndex() {
+            return cursor;
+        }
+
+        @Override
+        public int previousIndex() {
+            return cursor - 1;
+        }
+
+        @Override
+        public void set(T t) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void add(T t) {
+            throw new UnsupportedOperationException();
+        }
+
     }
 
 }

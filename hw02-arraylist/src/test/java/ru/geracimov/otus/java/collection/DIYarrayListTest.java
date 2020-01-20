@@ -1,14 +1,14 @@
 package ru.geracimov.otus.java.collection;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("Реализация DIYarrayList")
 class DIYarrayListTest {
@@ -58,34 +58,114 @@ class DIYarrayListTest {
         assertThat(strings.size()).isEqualTo(2);
     }
 
-    @Disabled
+    @Test
+    @DisplayName("Корректно возвращает результат проверки на вхождение элемента в коллекцию")
+    void containsElementTest() {
+        DIYarrayList<String> strings = new DIYarrayList<>(10);
+        strings.add("something1");
+        strings.add("something2");
+        assertThat(strings.contains("something1")).isTrue();
+        assertThat(strings.contains("something3")).isFalse();
+    }
+
     @Test
     @DisplayName("Корректно добавляет элементы в коллекцию")
     void addElementInListTest() {
         longList.add(1, 0L);
         longList.add(1, -1L);
-        assertThat(longList).containsSequence(0L, 1L, -1L, 0L, 2L, 3L);
-        assertThat(longList).hasSize(5);
+        assertThat(longList).containsSequence(0L, -1L, 0L, 1L, 2L, 3L);
+        assertThat(longList).hasSize(102);
     }
 
-    @Disabled
     @Test
-    @DisplayName("Корректно добавляет несколько элементов в коллекцию")
+    @DisplayName("Бросает исключение при добавлении элемента с неверным индексом")
+    void addElementInListExceptionTest() {
+        assertThatExceptionOfType(IndexOutOfBoundsException.class)
+                .isThrownBy(() -> longList.add(-5, 0L))
+                .withMessage("Index: %d, Size: %d", -5, 100);
+        assertThatExceptionOfType(IndexOutOfBoundsException.class)
+                .isThrownBy(() -> longList.add(101, 0L))
+                .withMessage("Index: %d, Size: %d", 101, 100);
+    }
+
+    @Test
+    @DisplayName("Бросает исключение при получении индекса элемента null")
+    void indexOfIllegalArgumentTest() {
+        DIYarrayList<String> strings = new DIYarrayList<>(10);
+        strings.add("something1");
+        strings.add("something2");
+        assertThatIllegalArgumentException().isThrownBy(() -> strings.indexOf(null));
+    }
+
+    @Test
+    @DisplayName("Корректно возвращает индекс последнего найденного элемента")
+    void lastIndexOfTest() {
+        longList.add(99L);
+        longList.add(99L);
+        longList.add(99L);
+        assertThat(longList.lastIndexOf(99L)).isEqualTo(102);
+        assertThat(longList.lastIndexOf(55L)).isEqualTo(55);
+        assertThat(longList.lastIndexOf(33L)).isEqualTo(33);
+    }
+
+    @Test
+    @DisplayName("Корректно возвращает индекс несуществующего элемента")
+    void lastIndexOfUnexpectedTest() {
+        assertThat(longList.lastIndexOf(200L)).isEqualTo(-1);
+        assertThat(longList.lastIndexOf(-1L)).isEqualTo(-1);
+    }
+
+    @Test
+    @DisplayName("Бросает исключение при определении индекса элемента null")
+    void lastIndexOfNullTest() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> longList.lastIndexOf(null));
+    }
+
+    @Test
+    @DisplayName("Корректноо чищает внутреннее хранилище элементов")
+    void clearTest() {
+        longList.clear();
+        assertThat(longList).hasSize(0);
+        assertThat(longList.isEmpty()).isTrue();
+        assertThat(longList.size()).isZero();
+    }
+
+    @Test
+    @DisplayName("Корректно добавляет несколько элементов в коллекцию через класс Collections")
     void addAllElementInListTest() {
         Collections.addAll(longList, 100L, 101L, 102L, 103L);
         assertThat(longList).containsSequence(98L, 99L, 100L, 101L, 102L, 103L);
         assertThat(longList).hasSize(104);
     }
 
-    @Disabled
+    @Test
+    @DisplayName("Корректно добавляет несколько элементов в коллекцию")
+    void addAllElementsTest() {
+        Collection<Long> collection = Arrays.asList(200L, 300L, 400L);
+        longList.addAll(collection);
+        assertThat(longList).hasSize(103);
+        assertThat(longList).contains(200L, 300L, 400L);
+    }
+
     @Test
     @DisplayName("Корректно удаляет элементы из коллекции")
-    void dddd() {
+    void removeElementsTest() {
         longList.remove(6L);
         longList.remove(7L);
         longList.remove(54L);
         assertThat(longList).hasSize(97);
         assertThat(longList).doesNotContain(6L, 7L, 54L);
     }
+
+    @Test
+    @DisplayName("Бросает исключение при вызове addAll(index, {})")
+    void addAllOnIndexUnsupported() {
+        Collection<Long> collection = Arrays.asList(200L, 300L, 400L);
+
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> longList.addAll(1, collection));
+    }
+
 
 }
