@@ -5,3 +5,11 @@ before_install:
   - chmod +x ./mvnw
 script:
   - ./mvnw clean install -B
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+notifications:
+  email:
+    recipients:
+      - geracimov@gmail.com
+    on_success: always
+    on_failure: always
