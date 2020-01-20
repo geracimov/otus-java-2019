@@ -129,7 +129,8 @@ public final class DIYarrayList<T> implements List<T> {
 
     @Override
     public void sort(Comparator<? super T> c) {
-        throw new UnsupportedOperationException();
+        //noinspection unchecked
+        Arrays.sort((T[]) elements, 0, size, c);
     }
 
     @Override
@@ -288,7 +289,10 @@ public final class DIYarrayList<T> implements List<T> {
 
         @Override
         public void set(T t) {
-            throw new UnsupportedOperationException();
+            if (returned < 0) {
+                throw new IllegalStateException();
+            }
+            DIYarrayList.this.set(returned, t);
         }
 
         @Override

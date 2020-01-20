@@ -14,12 +14,15 @@ import static org.assertj.core.api.Assertions.*;
 class DIYarrayListTest {
 
     private DIYarrayList<Long> longList;
+    private DIYarrayList<Long> longListReverse;
 
     @BeforeEach
     void init() {
         longList = new DIYarrayList<>();
+        longListReverse = new DIYarrayList<>(50, 3.0f);
         for (long l = 0L; l < 100L; l++) {
             longList.add(l);
+            longListReverse.add(0, l);
         }
     }
 
@@ -167,5 +170,28 @@ class DIYarrayListTest {
                 .isThrownBy(() -> longList.addAll(1, collection));
     }
 
+    @Test
+    @DisplayName("Корректно копируется в другую коллекцию через Collections.copy")
+    void collectionsCopyTest() {
+        assertThat(longListReverse.get(0)).isEqualTo(99L);
+        assertThat(longListReverse.get(99)).isEqualTo(0L);
+
+        Collections.copy(longListReverse, longList);
+        assertThat(longListReverse).hasSize(100);
+        assertThat(longListReverse).containsSequence(longList);
+    }
+
+    @Test
+    @DisplayName("Корректно сортируется через Collections.sort")
+    void collectionsSortTest() {
+        assertThat(longListReverse.get(0)).isEqualTo(99L);
+        assertThat(longListReverse.get(99)).isEqualTo(0L);
+
+        Collections.sort(longListReverse);
+        assertThat(longListReverse).hasSize(100);
+        assertThat(longListReverse.get(0)).isEqualTo(0L);
+        assertThat(longListReverse.get(99)).isEqualTo(99L);
+        assertThat(longListReverse).containsSequence(longList);
+    }
 
 }
