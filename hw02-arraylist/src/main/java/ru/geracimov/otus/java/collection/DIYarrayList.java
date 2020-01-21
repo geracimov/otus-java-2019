@@ -59,9 +59,17 @@ public final class DIYarrayList<T> implements List<T> {
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
-        for (T element : c) {
-            this.add(element);
+        Object[] cArray = c.toArray();
+        final int cSize = cArray.length;
+        if (cSize == 0) {
+            return false;
         }
+        final int elementsLength = elements.length;
+        //free slots in elements are not enough
+        if (cSize > elementsLength - size)
+            increase(elementsLength + cSize, factor);
+        System.arraycopy(cArray, 0, elements, size, cSize);
+        size = size + cSize;
         return true;
     }
 
@@ -218,11 +226,17 @@ public final class DIYarrayList<T> implements List<T> {
     }
 
     private void increase(float factor) {
+        increase(size + 1, factor);
+    }
+
+    private void increase(int minCapacity, float factor) {
         if (factor <= 1.0) {
             throw new IllegalArgumentException(String.format("Factor %f must be greater then 1.0", factor));
         }
         final float rawSize = Math.max(elements.length, DEFAULT_CAPACITY) * factor;
-        int newSize = rawSize > Integer.MAX_VALUE ? Integer.MAX_VALUE : Math.round(rawSize);
+        int newSize = rawSize > Integer.MAX_VALUE
+                ? Integer.MAX_VALUE
+                : minCapacity > rawSize ? minCapacity : Math.round(rawSize);
         Object[] newElements = new Object[newSize];
         System.arraycopy(elements, 0, newElements, 0, elements.length);
         elements = newElements;

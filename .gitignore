@@ -26,3 +26,8 @@ hs_err_pid*
 .idea/
 target/
 *.iml
+
+#Maven wrapper
+/mvnw
+/mvnw.cmd
+/.mvn/
