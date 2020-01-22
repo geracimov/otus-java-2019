@@ -3,18 +3,21 @@ package ru.geracimov.otus.java.utils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class IntUtilsGuavaImplTest {
     private static IntUtils UTIL;
 
     @BeforeAll
-    static void init() {
+    public static void init() {
         UTIL = new IntUtilsGuavaImpl();
     }
 
     @Test
-    void isPowerOfTwo() {
+    public void isPowerOfTwo() {
         boolean is = true;
         for (int i : new int[]{2, 3, 4, 7, 8, 9, 16, 31, 32}) {
             assertThat(UTIL.isPowerOfTwo(i)).isEqualTo(is);
@@ -23,16 +26,16 @@ class IntUtilsGuavaImplTest {
     }
 
     @Test
-    void log2ceiling() {
+    public void log2ceiling() {
         assertThat(UTIL.log2ceiling(1)).isEqualTo(0);
         assertThat(UTIL.log2ceiling(2)).isEqualTo(1);
         assertThat(UTIL.log2ceiling(8)).isEqualTo(3);
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> UTIL.log2ceiling(0))
-                                                                 .withMessage("x must be positive and finite");
+                .withMessage("x must be positive and finite");
     }
 
     @Test
-    void factorial() {
+    public void factorial() {
         assertThat(UTIL.factorial(6)).isEqualTo(720);
         assertThat(UTIL.factorial(2)).isEqualTo(2);
         assertThat(UTIL.factorial(1)).isEqualTo(1);
@@ -42,7 +45,7 @@ class IntUtilsGuavaImplTest {
     }
 
     @Test
-    void parseInt() {
+    public void parseInt() {
         assertThat(UTIL.parseInt("1")).isEqualTo(1);
         assertThat(UTIL.parseInt("34534534")).isEqualTo(34534534);
         assertThat(UTIL.parseInt("-34534")).isEqualTo(-34534);
