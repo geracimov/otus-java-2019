@@ -243,8 +243,8 @@ public final class DIYarrayList<T> implements List<T> {
     }
 
     private class DIYiterator implements Iterator<T> {
-        int cursor;
-        int returned = -1;
+        protected int cursor;
+        protected int returned = -1;
 
         DIYiterator() {
         }

@@ -17,7 +17,7 @@ class DIYarrayListTest {
     private DIYarrayList<Long> longListReverse;
 
     @BeforeEach
-    void init() {
+    public void init() {
         longList = new DIYarrayList<>();
         longListReverse = new DIYarrayList<>(50, 3.0f);
         for (long l = 0L; l < 100L; l++) {
@@ -28,7 +28,7 @@ class DIYarrayListTest {
 
     @Test
     @DisplayName("Корректно возвращает размер пустого списка")
-    void emptyListSizeTest() {
+    public void emptyListSizeTest() {
         DIYarrayList<String> strings = new DIYarrayList<>();
         assertThat(strings).isNotNull();
         assertThat(strings.size()).isEqualTo(0);
@@ -36,14 +36,14 @@ class DIYarrayListTest {
 
     @Test
     @DisplayName("Бросает исключение при инициализации списка с отрицательным размером")
-    void initListSizeNegativeSizeTest() {
+    public void initListSizeNegativeSizeTest() {
         assertThatIllegalArgumentException().isThrownBy(() -> new DIYarrayList<>(-1))
                 .withMessageMatching("Size must be positive");
     }
 
     @Test
     @DisplayName("Корректно возвращает признак пустого списка")
-    void emptyListIsEmptyTest() {
+    public void emptyListIsEmptyTest() {
         DIYarrayList<String> strings = new DIYarrayList<>();
         //noinspection ConstantConditions
         assertThat(strings.isEmpty()).isEqualTo(true);
@@ -53,7 +53,7 @@ class DIYarrayListTest {
 
     @Test
     @DisplayName("Корректно возвращает размер пустого списка с заданным начальным размером")
-    void emptyInitListSizeTest() {
+    public void emptyInitListSizeTest() {
         DIYarrayList<String> strings = new DIYarrayList<>(10);
         assertThat(strings.size()).isEqualTo(0);
         strings.add("something1");
@@ -63,7 +63,7 @@ class DIYarrayListTest {
 
     @Test
     @DisplayName("Корректно возвращает результат проверки на вхождение элемента в коллекцию")
-    void containsElementTest() {
+    public void containsElementTest() {
         DIYarrayList<String> strings = new DIYarrayList<>(10);
         strings.add("something1");
         strings.add("something2");
@@ -73,7 +73,7 @@ class DIYarrayListTest {
 
     @Test
     @DisplayName("Корректно добавляет элементы в коллекцию")
-    void addElementInListTest() {
+    public void addElementInListTest() {
         longList.add(1, 0L);
         longList.add(1, -1L);
         assertThat(longList).containsSequence(0L, -1L, 0L, 1L, 2L, 3L);
@@ -82,7 +82,7 @@ class DIYarrayListTest {
 
     @Test
     @DisplayName("Бросает исключение при добавлении элемента с неверным индексом")
-    void addElementInListExceptionTest() {
+    public void addElementInListExceptionTest() {
         assertThatExceptionOfType(IndexOutOfBoundsException.class)
                 .isThrownBy(() -> longList.add(-5, 0L))
                 .withMessage("Index: %d, Size: %d", -5, 100);
@@ -93,7 +93,7 @@ class DIYarrayListTest {
 
     @Test
     @DisplayName("Бросает исключение при получении индекса элемента null")
-    void indexOfIllegalArgumentTest() {
+    public void indexOfIllegalArgumentTest() {
         DIYarrayList<String> strings = new DIYarrayList<>(10);
         strings.add("something1");
         strings.add("something2");
@@ -102,7 +102,7 @@ class DIYarrayListTest {
 
     @Test
     @DisplayName("Корректно возвращает индекс последнего найденного элемента")
-    void lastIndexOfTest() {
+    public void lastIndexOfTest() {
         longList.add(99L);
         longList.add(99L);
         longList.add(99L);
@@ -113,21 +113,21 @@ class DIYarrayListTest {
 
     @Test
     @DisplayName("Корректно возвращает индекс несуществующего элемента")
-    void lastIndexOfUnexpectedTest() {
+    public void lastIndexOfUnexpectedTest() {
         assertThat(longList.lastIndexOf(200L)).isEqualTo(-1);
         assertThat(longList.lastIndexOf(-1L)).isEqualTo(-1);
     }
 
     @Test
     @DisplayName("Бросает исключение при определении индекса элемента null")
-    void lastIndexOfNullTest() {
+    public void lastIndexOfNullTest() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> longList.lastIndexOf(null));
     }
 
     @Test
     @DisplayName("Корректноо чищает внутреннее хранилище элементов")
-    void clearTest() {
+    public void clearTest() {
         longList.clear();
         assertThat(longList).hasSize(0);
         assertThat(longList.isEmpty()).isTrue();
@@ -136,7 +136,7 @@ class DIYarrayListTest {
 
     @Test
     @DisplayName("Корректно добавляет несколько элементов в коллекцию через класс Collections")
-    void addAllElementInListTest() {
+    public void addAllElementInListTest() {
         Collections.addAll(longList, 100L, 101L, 102L, 103L);
         assertThat(longList).containsSequence(98L, 99L, 100L, 101L, 102L, 103L);
         assertThat(longList).hasSize(104);
@@ -144,7 +144,7 @@ class DIYarrayListTest {
 
     @Test
     @DisplayName("Корректно добавляет несколько элементов в коллекцию")
-    void addAllElementsTest() {
+    public void addAllElementsTest() {
         Collection<Long> collection = Arrays.asList(200L, 300L, 400L);
         longList.addAll(collection);
         assertThat(longList).hasSize(103);
@@ -153,7 +153,7 @@ class DIYarrayListTest {
 
     @Test
     @DisplayName("Корректно удаляет элементы из коллекции")
-    void removeElementsTest() {
+    public void removeElementsTest() {
         longList.remove(6L);
         longList.remove(7L);
         longList.remove(54L);
@@ -163,7 +163,7 @@ class DIYarrayListTest {
 
     @Test
     @DisplayName("Бросает исключение при вызове addAll(index, {})")
-    void addAllOnIndexUnsupported() {
+    public void addAllOnIndexUnsupported() {
         Collection<Long> collection = Arrays.asList(200L, 300L, 400L);
 
         assertThatExceptionOfType(UnsupportedOperationException.class)
@@ -172,7 +172,7 @@ class DIYarrayListTest {
 
     @Test
     @DisplayName("Корректно копируется в другую коллекцию через Collections.copy")
-    void collectionsCopyTest() {
+    public void collectionsCopyTest() {
         assertThat(longListReverse.get(0)).isEqualTo(99L);
         assertThat(longListReverse.get(99)).isEqualTo(0L);
 
@@ -183,7 +183,7 @@ class DIYarrayListTest {
 
     @Test
     @DisplayName("Корректно сортируется через Collections.sort")
-    void collectionsSortTest() {
+    public void collectionsSortTest() {
         assertThat(longListReverse.get(0)).isEqualTo(99L);
         assertThat(longListReverse.get(99)).isEqualTo(0L);
 
