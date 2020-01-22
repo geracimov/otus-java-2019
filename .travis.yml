@@ -2,6 +2,15 @@ sudo: false
 language: java
 jdk: oraclejdk13
 before_install:
-  - chmod +x ./mvnw
+  - mvn -N io.takari:maven:wrapper
 script:
   - ./mvnw clean install -B
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -Ls https://coverage.codacy.com/get.sh)
+notifications:
+  email:
+    recipients:
+      - geracimov@gmail.com
+    on_success: always
+    on_failure: always
