@@ -38,4 +38,19 @@ public class LangolierHelper {
         return 100_000_000 / (appetite * 128 * mb);
     }
 
+    public String printPercentage(long currentPosition, long maxPosition, int barLength) {
+        assert currentPosition >= 0;
+        assert currentPosition <= maxPosition;
+        assert barLength > 0;
+
+        double positionsByElement = (double) maxPosition / barLength;
+        final int elements = (int) (currentPosition / positionsByElement);
+
+        return 100 * (barLength - elements) / barLength + "% " +
+                "["
+                + "#".repeat(Math.max(0, barLength - elements))
+                + ".".repeat(Math.max(0, elements)) +
+                "]";
+    }
+
 }

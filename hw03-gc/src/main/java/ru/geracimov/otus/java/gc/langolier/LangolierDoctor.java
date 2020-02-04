@@ -44,21 +44,7 @@ public class LangolierDoctor implements Runnable {
                     gc.getCollectionTime());
         }
         logger.info("Memory free/total/max: {}/{}/{} MiB", helper.mb(rt.freeMemory()), helper.mb(rt.totalMemory()), helper.mb(rt.maxMemory()));
-        logger.info(printPercentage(rt.freeMemory(), rt.totalMemory(), barLength));
-    }
-
-    private String printPercentage(long currentPosition, long maxPosition, int barLength) {
-        assert currentPosition <= maxPosition;
-        assert barLength > 0;
-
-        double positionsByElement = (double) maxPosition / barLength;
-        final int elements = (int) (currentPosition / positionsByElement);
-
-        return 100 * (barLength - elements) / barLength + "% " +
-                "["
-                + "#".repeat(Math.max(0, barLength - elements))
-                + ".".repeat(Math.max(0, elements)) +
-                "]";
+        logger.info(helper.printPercentage(rt.freeMemory(), rt.totalMemory(), barLength));
     }
 
 }
