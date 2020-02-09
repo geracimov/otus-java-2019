@@ -16,7 +16,7 @@ public class LangolierHelper {
             appetite = Integer.parseInt(envLangolierAppetite);
         } catch (NumberFormatException nfe) {
             appetite = APPETITE_DEFAULT;
-            logger.error("ENV {} is unset! Appetite set default value: {}", LANGOLIER_APPETITE, appetite, nfe);
+            logger.warn("ENV {} is unset! Appetite set default value: {}", LANGOLIER_APPETITE, appetite, nfe);
         }
     }
 

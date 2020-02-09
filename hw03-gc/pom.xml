@@ -5,11 +5,15 @@
     <parent>
         <artifactId>otus-java-2019</artifactId>
         <groupId>ru.geracimov.otus</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>hw03-gc</artifactId>
+
+    <properties>
+        <skip-run-gc-execution>true</skip-run-gc-execution>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -102,6 +106,9 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+                    <skip>${skip-run-gc-execution}</skip>
+                </configuration>
                 <executions>
                     <!--========================================== 128 M ===========================================-->
                     <execution>
