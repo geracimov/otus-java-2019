@@ -11,9 +11,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-class IoC {
+public class IoC {
 
-    static <C, I> C createProxy(Class<C> aClass, Class<I>[] interfaces) {
+    public static <C, I> C createProxy(Class<C> aClass, Class<I>[] interfaces) {
         for (Class<I> anInterface : interfaces) {
             if (!anInterface.isAssignableFrom(aClass)) {
                 System.err.println("Error assignable!");
