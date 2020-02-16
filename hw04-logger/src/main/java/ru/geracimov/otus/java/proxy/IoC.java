@@ -6,6 +6,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -66,7 +67,6 @@ class IoC {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            System.out.println("=====================================");
             if (isLoggable(method)) {
                 logParameters(method, args);
             }
@@ -102,17 +102,7 @@ class IoC {
         }
 
         private void logParameters(Method method, Object[] args) {
-            System.out.println(method);
-            final int parameterCount = method.getParameterCount();
-            System.out.println("Parameters count: " + parameterCount);
-
-            if (parameterCount > 0) {
-                System.out.println("Parameters list:");
-                for (int i = 0; i < method.getParameters().length; i++) {
-                    System.out.printf("\tparameter %d: %s\n", i + 1, args[i]);
-                }
-            }
-            System.out.println("===>>>");
+            System.out.printf("executed method: %s, param: %s\n", method.getName(), Arrays.toString(args));
         }
 
     }
