@@ -3,7 +3,7 @@ package ru.geracimov.otus.java.proxy;
 import ru.geracimov.otus.java.BusinessLogic;
 import ru.geracimov.otus.java.GreatBusinessLogic;
 
-public class proxyLogRunner {
+public class ProxyLogRunner {
 
     public static void main(String[] args) {
 

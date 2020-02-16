@@ -19,7 +19,7 @@ public class GreatBusinessLogicTest {
     private BusinessLogic proxy;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         original = new GreatBusinessLogic();
         Class[] interfaces = new Class[1];
         interfaces[0] = BusinessLogic.class;
@@ -44,7 +44,7 @@ public class GreatBusinessLogicTest {
     }
 
     @AfterAll
-    static void afterAll() {
+    public static void afterAll() {
         System.setOut(OUT);
     }
 }
