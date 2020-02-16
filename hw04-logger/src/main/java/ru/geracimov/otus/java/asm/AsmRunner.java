@@ -8,18 +8,13 @@ public class AsmRunner {
         GreatBusinessLogic logic = new GreatBusinessLogic();
 
 
-        System.out.println("1. Do nothing...");
-        logic.doNothing();
+        logic.doSomething();
 
-        System.out.println("2. Do doNothingAgain...");
-        logic.doNothingAgain(Integer.MIN_VALUE);
+        logic.doSomethingAgain(Integer.MIN_VALUE);
 
-        System.out.println("3. Do doNothingAgainAndAgain...");
-        final String customString = logic.doNothingAgainAndAgain(1, Integer.MAX_VALUE, "Custom string");
-        System.out.println(customString);
+        logic.doSomethingAgainAndAgain(1, Integer.MAX_VALUE, "Custom string");
 
-        System.out.println("4. doNothingSecretly...");
-        logic.doNothingSecretly(new Object());
+        logic.doSomethingSecretly(new Object());
 
     }
 
