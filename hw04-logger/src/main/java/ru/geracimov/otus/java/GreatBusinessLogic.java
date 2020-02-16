@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class GreatBusinessLogic implements BusinessLogic {
-    Random random;
+    final Random random;
 
     public GreatBusinessLogic() {
         random = new Random();

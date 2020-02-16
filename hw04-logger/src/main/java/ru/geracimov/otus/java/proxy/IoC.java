@@ -52,15 +52,15 @@ public class IoC {
 
     static class LogInvocationHandler<C> implements InvocationHandler {
         private final C aClass;
-        private final Set<Method> loggabedMethods;
+        private final Set<Method> loggableMethods;
 
         LogInvocationHandler(C aClass) {
             this.aClass = aClass;
-            this.loggabedMethods = new HashSet<>();
+            this.loggableMethods = new HashSet<>();
             // cache all loggable methods
             for (Method declaredMethod : aClass.getClass().getDeclaredMethods()) {
                 if (declaredMethod.isAnnotationPresent(Log.class)) {
-                    loggabedMethods.add(declaredMethod);
+                    loggableMethods.add(declaredMethod);
                 }
             }
         }
@@ -75,8 +75,8 @@ public class IoC {
         }
 
         private boolean isLoggable(Method method) {
-            for (Method loggabedMethod : loggabedMethods) {
-                if (methodsEquals(method, loggabedMethod)) return true;
+            for (Method loggableMethod : loggableMethods) {
+                if (methodsEquals(method, loggableMethod)) return true;
             }
             return false;
         }
