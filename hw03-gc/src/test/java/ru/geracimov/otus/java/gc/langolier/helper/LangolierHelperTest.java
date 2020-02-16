@@ -12,7 +12,7 @@ public class LangolierHelperTest {
     private static LangolierHelper helper;
 
     @BeforeAll
-    static void beforeAll() {
+    public static void beforeAll() {
         helper = new LangolierHelper();
     }
 
