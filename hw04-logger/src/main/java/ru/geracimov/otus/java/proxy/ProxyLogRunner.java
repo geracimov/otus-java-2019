@@ -6,10 +6,8 @@ import ru.geracimov.otus.java.GreatBusinessLogic;
 public class ProxyLogRunner {
 
     public static void main(String[] args) {
-
-        Class[] interfaces = new Class[1];
-        interfaces[0] = BusinessLogic.class;
-        BusinessLogic bl = IoC.createProxy(GreatBusinessLogic.class, interfaces);
+        BusinessLogic bl = IoC.createProxy(GreatBusinessLogic.class,
+                new Class[]{BusinessLogic.class});
 
         bl.doSomething();
         bl.doSomethingAgain(999);

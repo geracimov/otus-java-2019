@@ -7,11 +7,10 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
+import java.util.Random;
 
 public class IoC {
+    private static final Random random = new Random();
 
     public static <C, I> C createProxy(Class<C> aClass, Class<I>[] interfaces) {
         for (Class<I> anInterface : interfaces) {
@@ -21,9 +20,9 @@ public class IoC {
             }
         }
 
-        final Constructor<C> constructor = getDefaultConstructor(aClass);
-        final C instance = newInstance(constructor);
-        final InvocationHandler handler = new LogInvocationHandler<>(instance);
+        final C instance = newInstance(getDefaultConstructor(aClass));
+        final AbstractMethodCache cache = methodCacheRandomChooser();
+        final InvocationHandler handler = new LogInvocationHandler<>(instance, cache);
 
         //noinspection unchecked,unchecked
         return (C) Proxy.newProxyInstance(IoC.class.getClassLoader(), interfaces, handler);
@@ -49,56 +48,37 @@ public class IoC {
         return constructor;
     }
 
+    private static AbstractMethodCache methodCacheRandomChooser() {
+        final int randomInt = random.nextInt(2);
+        AbstractMethodCache result = randomInt > 0
+                ? new EqualsMethodCache()
+                : new HashMethodCache();
+        System.out.println("Choose methodCache: " + result.getClass().getSimpleName());
+        return result;
+    }
 
     static class LogInvocationHandler<C> implements InvocationHandler {
         private final C aClass;
-        private final Set<Method> loggableMethods;
+        private final AbstractMethodCache cache;
 
-        LogInvocationHandler(C aClass) {
+        LogInvocationHandler(C aClass, AbstractMethodCache cache) {
             this.aClass = aClass;
-            this.loggableMethods = new HashSet<>();
-            // cache all loggable methods
+            this.cache = cache;
+
             for (Method declaredMethod : aClass.getClass().getDeclaredMethods()) {
                 if (declaredMethod.isAnnotationPresent(Log.class)) {
-                    loggableMethods.add(declaredMethod);
+                    cache.put(declaredMethod);
                 }
             }
         }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if (isLoggable(method)) {
+            if (cache.contains(method)) {
                 logParameters(method, args);
             }
 
             return method.invoke(aClass, args);
-        }
-
-        private boolean isLoggable(Method method) {
-            for (Method loggableMethod : loggableMethods) {
-                if (methodsEquals(method, loggableMethod)) return true;
-            }
-            return false;
-        }
-
-        private boolean methodsEquals(Method first, Method second) {
-            if (first.getName().equals(second.getName())) {
-                if (!first.getReturnType().equals(second.getReturnType()))
-                    return false;
-                return equalParamTypes(first.getParameterTypes(), second.getParameterTypes());
-            }
-            return false;
-        }
-
-        private boolean equalParamTypes(Class<?>[] first, Class<?>[] second) {
-            if (first.length == second.length) {
-                for (int i = 0; i < first.length; i++) {
-                    if (first[i] != second[i])
-                        return false;
-                }
-                return true;
-            }
-            return false;
         }
 
         private void logParameters(Method method, Object[] args) {
