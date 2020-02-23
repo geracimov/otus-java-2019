@@ -1,13 +1,17 @@
 package ru.geracimov.otus.java.testing.internal;
 
+import ru.geracimov.otus.java.testing.internal.impl.ResultState;
+
 public interface Result {
 
-    long getRunCount();
+    ResultState getState();
 
-    long getFailureCount();
+    long getRuntime();
 
-    long getIgnoreCount();
+    void fail();
 
-    long getRunTime();
+    void success();
+
+    void ignore();
 
 }
