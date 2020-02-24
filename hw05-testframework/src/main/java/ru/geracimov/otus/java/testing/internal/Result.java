@@ -8,7 +8,9 @@ public interface Result {
 
     long getRuntime();
 
-    void fail();
+    void fail(Throwable e);
+
+    Throwable failCause();
 
     void success();
 

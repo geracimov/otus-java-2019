@@ -10,11 +10,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static ru.geracimov.otus.java.testing.internal.impl.ResultState.FAILURE;
+
 
 @RequiredArgsConstructor
 public class ResultsImpl implements Results {
     public static final String BORDER = "****************************************************************************************************";
     public static final String LINE_FORMAT = "%s. %-75s %-10s %d ns";
+    public static final String LINE_FORMAT_EXC = "\texception: %s";
     public static final String TOTAL_FORMAT = "Total run: %d, success: %d, ignore: %d, failure %d, time elapsed: %d ns";
     private final Map<Method, Result> results = new HashMap<>();
 
@@ -66,7 +69,11 @@ public class ResultsImpl implements Results {
     }
 
     private void printLine(int lineNo, Method method, Result result) {
-        System.out.println(String.format(LINE_FORMAT, lineNo, getTestDisplayName(method), result.getState(), result.getRuntime()));
+        final ResultState state = result.getState();
+        System.out.println(String.format(LINE_FORMAT, lineNo, getTestDisplayName(method), state, result.getRuntime()));
+        final Throwable throwable = result.failCause();
+        if (FAILURE.equals(state) && throwable != null)
+            System.out.println(String.format(LINE_FORMAT_EXC, throwable.getMessage()));
     }
 
     private void printTotal(int totalCount, int successCount, int ignoreCount, int failCount, long timeElapsed) {

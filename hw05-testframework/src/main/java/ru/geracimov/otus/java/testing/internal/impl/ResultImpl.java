@@ -15,6 +15,7 @@ public class ResultImpl implements Result {
     private final long started = System.nanoTime();
     private ResultState state;
     private long finished;
+    private Throwable exception;
 
     @Override
     public ResultState getState() {
@@ -29,9 +30,15 @@ public class ResultImpl implements Result {
     }
 
     @Override
-    public void fail() {
+    public void fail(Throwable throwable) {
         state = ResultState.FAILURE;
+        exception = throwable;
         finished = System.nanoTime();
+    }
+
+    @Override
+    public Throwable failCause() {
+        return exception;
     }
 
     @Override

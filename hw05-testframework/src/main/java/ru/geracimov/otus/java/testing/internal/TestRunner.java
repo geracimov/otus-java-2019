@@ -43,8 +43,7 @@ public class TestRunner {
             method.invoke(o);
             result.success();
         } catch (Exception e) {
-            result.fail();
-            e.printStackTrace();
+            result.fail(e.getCause());
         }
 
         log.info("Test {} completed", method.getName());
