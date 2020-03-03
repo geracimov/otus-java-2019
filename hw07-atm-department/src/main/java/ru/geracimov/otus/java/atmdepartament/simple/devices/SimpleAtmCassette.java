@@ -51,6 +51,11 @@ public class SimpleAtmCassette implements AtmCassette {
     }
 
     @Override
+    public Long arrival(long count) {
+        return balance.addAndGet(count);
+    }
+
+    @Override
     @SneakyThrows
     public AtmCassette clone() {
         return new SimpleAtmCassette(currency, denomination, balance.get());

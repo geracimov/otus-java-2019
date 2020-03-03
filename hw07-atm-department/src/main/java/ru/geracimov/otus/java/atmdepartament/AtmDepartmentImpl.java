@@ -18,6 +18,11 @@ public class AtmDepartmentImpl implements AtmDepartment {
     private final ConfigServer configServer;
 
     @Override
+    public long getAtmCount() {
+        return atmList.size();
+    }
+
+    @Override
     public Map<Currency, Long> getBalance() {
         return atmList.stream()
                 .map(AtmBackend::getBalance)

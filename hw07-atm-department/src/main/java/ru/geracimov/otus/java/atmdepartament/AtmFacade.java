@@ -11,4 +11,6 @@ public interface AtmFacade {
 
     Map<Denomination, Long> giveOut(Currency currency, long amount);
 
+    Map<Currency, Map<Denomination, Long>> accept(Map<Currency, Map<Denomination, Long>> cash);
+
 }

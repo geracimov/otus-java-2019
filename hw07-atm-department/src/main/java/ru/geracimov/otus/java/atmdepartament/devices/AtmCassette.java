@@ -16,6 +16,8 @@ public interface AtmCassette extends Cloneable {
 
     Long withdraw(long count);
 
+    Long arrival(long count);
+
     AtmCassette clone();
 
 }

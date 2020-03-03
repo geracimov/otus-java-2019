@@ -9,7 +9,6 @@ import ru.geracimov.otus.java.atmdepartament.devices.AtmCassette;
 import ru.geracimov.otus.java.atmdepartament.money.Currency;
 import ru.geracimov.otus.java.atmdepartament.money.Denomination;
 
-import javax.naming.OperationNotSupportedException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,6 +20,8 @@ import java.util.stream.Collectors;
 public class SimpleAtmCashDispenser implements AtmCashDispenser {
     private final List<AtmCassette> cassettes;
     private final GiveOutCalculationStrategy giveOutStrategy;
+    private final SimpleAtmCashDispenserAcceptor acceptor = new SimpleAtmCashDispenserAcceptor(this);
+    private final SimpleAtmCashDispenserGiveOuter giveOuter = new SimpleAtmCashDispenserGiveOuter(this);
 
     @Override
     @SneakyThrows
@@ -36,14 +37,12 @@ public class SimpleAtmCashDispenser implements AtmCashDispenser {
 
     @Override
     public Map<Denomination, Long> giveOut(Currency currency, long amount) {
-        final Map<Denomination, Long> calculated = giveOutStrategy.calculate(getLeftovers(currency), amount);
-        return withdraw(currency, calculated);
+        return giveOuter.giveOut(currency, amount, giveOutStrategy);
     }
 
-    @SneakyThrows
     @Override
-    public void acceptIn(Map<Denomination, Long> input) {
-        throw new OperationNotSupportedException("Cannot accept cash");
+    public Map<Currency, Map<Denomination, Long>> accept(Map<Currency, Map<Denomination, Long>> inputCash) {
+        return acceptor.accept(inputCash);
     }
 
     @Override
@@ -61,14 +60,8 @@ public class SimpleAtmCashDispenser implements AtmCashDispenser {
         return balance(currency) > amount;
     }
 
-    private Map<Denomination, Long> getLeftovers(Currency currency) {
-        return cassettes.stream()
-                .filter(c -> c.loadedCurrency().equals(currency))
-                .collect(atmCassettesLeftoversCollector());
-    }
-
-    private Collector<AtmCassette, ?, Map<Denomination, Long>> atmCassettesLeftoversCollector() {
-        return Collectors.toMap(AtmCassette::loadedDenomination, AtmCassette::balance, Long::sum);
+    List<AtmCassette> getCassetteList() {
+        return cassettes;
     }
 
     private Collector<AtmCassette, ?, Map<Currency, Long>> atmCassettesBalanceCollector() {
@@ -80,25 +73,6 @@ public class SimpleAtmCashDispenser implements AtmCashDispenser {
                 .filter(c -> c.loadedCurrency().equals(currency))
                 .map(c -> c.balance() * c.loadedDenomination().getNominal())
                 .reduce(Long::sum);
-    }
-
-    private Map<Denomination, Long> withdraw(Currency currency, Map<Denomination, Long> calculatedWithdraw) {
-        calculatedWithdraw.forEach((denomination, count) -> {
-            long restCount = count;
-            for (AtmCassette cassette : cassettes) {
-                if (!isLookingCassette(currency, denomination, cassette)) continue;
-                final long balance = cassette.balance();
-                final long withdrawCassette = balance >= restCount ? restCount : restCount - balance;
-                cassette.withdraw(withdrawCassette);
-                restCount -= withdrawCassette;
-                if (restCount == 0) break;
-            }
-        });
-        return calculatedWithdraw;
-    }
-
-    private boolean isLookingCassette(Currency currency, Denomination denomination, AtmCassette cassette) {
-        return cassette.loadedCurrency().equals(currency) && cassette.loadedDenomination().equals(denomination);
     }
 
 }

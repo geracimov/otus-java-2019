@@ -7,6 +7,8 @@ import java.util.Map;
 
 public interface AtmDepartment {
 
+    long getAtmCount();
+
     Map<Currency, Long> getBalance();
 
     void restoreAtmConfigurations();

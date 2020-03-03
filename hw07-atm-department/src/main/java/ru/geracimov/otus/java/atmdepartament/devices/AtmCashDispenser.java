@@ -5,13 +5,13 @@ import ru.geracimov.otus.java.atmdepartament.money.Denomination;
 
 import java.util.Map;
 
-public interface AtmCashDispenser extends  Cloneable {
+public interface AtmCashDispenser extends Cloneable {
 
     int getCassettes();
 
     Map<Denomination, Long> giveOut(Currency currency, long amount);
 
-    void acceptIn(Map<Denomination, Long> input);
+    Map<Currency, Map<Denomination, Long>> accept(Map<Currency, Map<Denomination, Long>> cash);
 
     long balance(Currency currency);
 
