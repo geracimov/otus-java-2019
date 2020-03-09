@@ -1,22 +1,20 @@
 package ru.geracimov.otus.java.atm.simple.devices;
 
 import lombok.ToString;
-import ru.geracimov.otus.java.atm.exception.AtmException;
 import ru.geracimov.otus.java.atm.AtmCassette;
+import ru.geracimov.otus.java.atm.exception.AtmException;
 import ru.geracimov.otus.java.atm.money.Currency;
 import ru.geracimov.otus.java.atm.money.Denomination;
-
-import java.util.concurrent.atomic.AtomicLong;
 
 @ToString
 public class SimpleAtmCassette implements AtmCassette {
     private final Currency currency;
     private final Denomination denomination;
-    private final AtomicLong balance;
+    private long balance;
 
     public SimpleAtmCassette(Currency currency, Denomination denomination, long balance) {
         checkParameters(currency, denomination, balance);
-        this.balance = new AtomicLong(balance);
+        this.balance = balance;
         this.currency = currency;
         this.denomination = denomination;
     }
@@ -32,16 +30,17 @@ public class SimpleAtmCassette implements AtmCassette {
     }
 
     @Override
-    public Long balance() {
-        return balance.get();
+    public long balance() {
+        return balance;
     }
 
     @Override
-    public Long withdraw(long count) {
+    public long withdraw(long count) {
         if (count > balance()) {
-            throw new AtmException(String.format("Requested count %d more than balance %d", count, balance.get()));
+            throw new AtmException(String.format("Requested count %d more than balance %d", count, balance));
         }
-        return balance.addAndGet(-count);
+        balance -= count;
+        return balance;
     }
 
     private void checkParameters(Currency currency, Denomination denomination, long capacity) {
