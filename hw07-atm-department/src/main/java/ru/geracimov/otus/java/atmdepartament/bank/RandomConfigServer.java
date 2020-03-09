@@ -43,11 +43,6 @@ public class RandomConfigServer implements ConfigServer {
     }
 
     @Override
-    public void resetAtmConfiguration() {
-        atmConfigurations.forEach(AtmBackend::apply);
-    }
-
-    @Override
     public void resetAtmConfiguration(@NonNull List<AtmBackend> atmList) {
         Predicate<Map.Entry<AtmBackend, AtmConfiguration>> atmListContainsAtm = t -> atmList.contains(t.getKey());
         atmConfigurations.entrySet()

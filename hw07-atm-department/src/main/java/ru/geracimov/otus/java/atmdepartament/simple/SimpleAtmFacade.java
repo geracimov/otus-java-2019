@@ -2,6 +2,7 @@ package ru.geracimov.otus.java.atmdepartament.simple;
 
 import lombok.Value;
 import ru.geracimov.otus.java.atmdepartament.AtmFacade;
+import ru.geracimov.otus.java.atmdepartament.money.CashBundle;
 import ru.geracimov.otus.java.atmdepartament.devices.AtmCashDispenser;
 import ru.geracimov.otus.java.atmdepartament.devices.AtmDisplay;
 import ru.geracimov.otus.java.atmdepartament.devices.AtmKeyboard;
@@ -54,11 +55,11 @@ public class SimpleAtmFacade implements AtmFacade {
     }
 
     @Override
-    public Map<Currency, Map<Denomination, Long>> accept(Map<Currency, Map<Denomination, Long>> cash) {
+    public Map<Currency, CashBundle> accept(Map<Currency, CashBundle> cash) {
         display.printText("------------------------------------------------------------");
         display.printText("ARRIVAL " + cash);
         display.printText("before arrival: " + dispenser.balance());
-        final Map<Currency, Map<Denomination, Long>> returned = dispenser.accept(cash);
+        final Map<Currency, CashBundle> returned = dispenser.acceptCashBundles(cash);
         display.printText("RETURNED TO CLIENT: " + returned);
         display.printText("after arrival: " + dispenser.balance());
         return returned;

@@ -2,6 +2,8 @@ package ru.geracimov.otus.java.atmdepartament;
 
 import ru.geracimov.otus.java.atmdepartament.bank.ConfigServer;
 import ru.geracimov.otus.java.atmdepartament.bank.RandomConfigServer;
+import ru.geracimov.otus.java.atmdepartament.money.CashBundle;
+import ru.geracimov.otus.java.atmdepartament.money.CashBundleItem;
 import ru.geracimov.otus.java.atmdepartament.money.Currency;
 import ru.geracimov.otus.java.atmdepartament.money.Denomination;
 import ru.geracimov.otus.java.atmdepartament.simple.SimpleAtm;
@@ -36,11 +38,11 @@ public class Runner {
 
     private static void giveOutMoney(List<AtmBackend> simpleAtmList) {
 
-        Map<Currency, Map<Denomination, Long>> arrival = new HashMap<>();
-        Map<Denomination, Long> arrCur = new HashMap<>();
-        arrCur.put(Denomination.B10, 15L);
-        arrCur.put(Denomination.B100, 150L);
-        arrival.put(Currency.RUR, arrCur);
+        Map<Currency, CashBundle> arrival = new HashMap<>();
+        CashBundle bundle = new CashBundle();
+        bundle.put(new CashBundleItem(Denomination.B10, 15L));
+        bundle.put(new CashBundleItem(Denomination.B100, 150L));
+        arrival.put(Currency.RUR, bundle);
 
 
         simpleAtmList.forEach(atm -> {

@@ -3,6 +3,7 @@ package ru.geracimov.otus.java.atmdepartament.simple.devices;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.ToString;
+import ru.geracimov.otus.java.atmdepartament.money.CashBundle;
 import ru.geracimov.otus.java.atmdepartament.bank.GiveOutCalculationStrategy;
 import ru.geracimov.otus.java.atmdepartament.devices.AtmCashDispenser;
 import ru.geracimov.otus.java.atmdepartament.devices.AtmCassette;
@@ -41,8 +42,8 @@ public class SimpleAtmCashDispenser implements AtmCashDispenser {
     }
 
     @Override
-    public Map<Currency, Map<Denomination, Long>> accept(Map<Currency, Map<Denomination, Long>> inputCash) {
-        return acceptor.accept(inputCash);
+    public Map<Currency, CashBundle> acceptCashBundles(Map<Currency, CashBundle> inputCashBundles) {
+        return acceptor.accept(inputCashBundles);
     }
 
     @Override

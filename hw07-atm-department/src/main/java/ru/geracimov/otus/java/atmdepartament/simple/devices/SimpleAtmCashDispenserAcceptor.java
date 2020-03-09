@@ -1,6 +1,8 @@
 package ru.geracimov.otus.java.atmdepartament.simple.devices;
 
 import lombok.RequiredArgsConstructor;
+import ru.geracimov.otus.java.atmdepartament.money.CashBundle;
+import ru.geracimov.otus.java.atmdepartament.money.CashBundleItem;
 import ru.geracimov.otus.java.atmdepartament.devices.AtmCassette;
 import ru.geracimov.otus.java.atmdepartament.money.Currency;
 import ru.geracimov.otus.java.atmdepartament.money.Denomination;
@@ -14,41 +16,41 @@ import java.util.stream.Collectors;
 public class SimpleAtmCashDispenserAcceptor {
     private final SimpleAtmCashDispenser dispenser;
 
-    Map<Currency, Map<Denomination, Long>> accept(Map<Currency, Map<Denomination, Long>> inputCash) {
-        Map<Currency, Map<Denomination, Long>> returned = new HashMap<>();
-        for (Map.Entry<Currency, Map<Denomination, Long>> inputCashEntry : inputCash.entrySet()) {
+    Map<Currency, CashBundle> accept(Map<Currency, CashBundle> inputCash) {
+        Map<Currency, CashBundle> returned = new HashMap<>();
+        for (Map.Entry<Currency, CashBundle> inputCashEntry : inputCash.entrySet()) {
             final Currency inputCashCurrency = inputCashEntry.getKey();
-            final Map<Denomination, Long> inputCashDenominations = inputCashEntry.getValue();
+            final CashBundle inputCashDenominations = inputCashEntry.getValue();
             acceptCurrency(returned, inputCashCurrency, inputCashDenominations);
         }
         return returned;
     }
 
-    private void acceptCurrency(Map<Currency, Map<Denomination, Long>> returned,
+    private void acceptCurrency(Map<Currency, CashBundle> returned,
                                 Currency inputCashCurrency,
-                                Map<Denomination, Long> inputCashDenominations) {
+                                CashBundle inputCashBundle) {
         final List<AtmCassette> cassettesCurrency = cassettesBy(inputCashCurrency);
         if (cassettesCurrency.size() == 0) {
-            returned.put(inputCashCurrency, inputCashDenominations);
+            returned.put(inputCashCurrency, inputCashBundle);
             return;
         }
-        for (Map.Entry<Denomination, Long> denominationsCashEntry : inputCashDenominations.entrySet()) {
-            acceptDenomination(returned, inputCashCurrency, denominationsCashEntry);
+        for (CashBundleItem cashBundleItem : inputCashBundle.getCashBundleItems()) {
+            acceptDenomination(returned, inputCashCurrency, cashBundleItem);
         }
     }
 
-    private void acceptDenomination(Map<Currency, Map<Denomination, Long>> returned,
+    private void acceptDenomination(Map<Currency, CashBundle> returned,
                                     Currency inputCashCurrency,
-                                    Map.Entry<Denomination, Long> denominationsCashEntry) {
-        final List<AtmCassette> denominationCassettes = cassettesBy(inputCashCurrency, denominationsCashEntry.getKey());
-        final Map<Denomination, Long> returnedDenominations = returned.getOrDefault(inputCashCurrency, new HashMap<>());
+                                    CashBundleItem inputItem) {
+        final List<AtmCassette> denominationCassettes = cassettesBy(inputCashCurrency, inputItem.getDenomination());
+        final CashBundle returnedDenominations = returned.getOrDefault(inputCashCurrency, new CashBundle());
         if (denominationCassettes.size() == 0) {
-            returnedDenominations.put(denominationsCashEntry.getKey(), denominationsCashEntry.getValue());
+            returnedDenominations.put(inputItem);
             returned.put(inputCashCurrency, returnedDenominations);
             return;
         }
         //if ATM contains several cassettes of the same denomination, then accept cash in the first cassette
-        denominationCassettes.get(0).arrival(denominationsCashEntry.getValue());
+        denominationCassettes.get(0).arrival(inputItem.getCount());
     }
 
     private List<AtmCassette> cassettesBy(Currency currency) {

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class SimpleAtmCashDispenserGiveOuter {
     private final SimpleAtmCashDispenser dispenser;
 
-    Map<Denomination, Long> giveOut(Currency currency, long amount, GiveOutCalculationStrategy giveOutStrategy){
+    Map<Denomination, Long> giveOut(Currency currency, long amount, GiveOutCalculationStrategy giveOutStrategy) {
         final Map<Denomination, Long> calculated = giveOutStrategy.calculate(getLeftovers(currency), amount);
         return withdraw(currency, calculated);
     }
@@ -23,11 +23,12 @@ public class SimpleAtmCashDispenserGiveOuter {
         calculatedWithdraw.forEach((denomination, count) -> {
             long restCount = count;
             for (AtmCassette cassette : dispenser.getCassetteList()) {
-                if (!isLookingCassette(currency, denomination, cassette)) continue;
-                final long balance = cassette.balance();
-                final long withdrawCassette = balance >= restCount ? restCount : restCount - balance;
-                cassette.withdraw(withdrawCassette);
-                restCount -= withdrawCassette;
+                if (isLookingCassette(currency, denomination, cassette)) {
+                    final long balance = cassette.balance();
+                    final long withdrawCassette = balance >= restCount ? restCount : restCount - balance;
+                    cassette.withdraw(withdrawCassette);
+                    restCount -= withdrawCassette;
+                }
                 if (restCount == 0) break;
             }
         });

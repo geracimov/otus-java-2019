@@ -1,5 +1,6 @@
 package ru.geracimov.otus.java.atmdepartament;
 
+import ru.geracimov.otus.java.atmdepartament.money.CashBundle;
 import ru.geracimov.otus.java.atmdepartament.money.Currency;
 import ru.geracimov.otus.java.atmdepartament.money.Denomination;
 
@@ -11,6 +12,6 @@ public interface AtmFacade {
 
     Map<Denomination, Long> giveOut(Currency currency, long amount);
 
-    Map<Currency, Map<Denomination, Long>> accept(Map<Currency, Map<Denomination, Long>> cash);
+    Map<Currency, CashBundle> accept(Map<Currency, CashBundle> cash);
 
 }

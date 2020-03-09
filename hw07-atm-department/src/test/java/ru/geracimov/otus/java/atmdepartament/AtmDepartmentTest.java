@@ -9,8 +9,9 @@ import ru.geracimov.otus.java.atmdepartament.bank.GiveOutCalculationStrategy;
 import ru.geracimov.otus.java.atmdepartament.bank.MinNotesGiveOutStrategy;
 import ru.geracimov.otus.java.atmdepartament.bank.RandomConfigServer;
 import ru.geracimov.otus.java.atmdepartament.devices.AtmCassette;
+import ru.geracimov.otus.java.atmdepartament.money.CashBundle;
+import ru.geracimov.otus.java.atmdepartament.money.CashBundleItem;
 import ru.geracimov.otus.java.atmdepartament.money.Currency;
-import ru.geracimov.otus.java.atmdepartament.money.Denomination;
 import ru.geracimov.otus.java.atmdepartament.simple.SimpleAtm;
 import ru.geracimov.otus.java.atmdepartament.simple.SimpleAtmConfiguration;
 import ru.geracimov.otus.java.atmdepartament.simple.devices.SimpleAtmCashDispenser;
@@ -24,7 +25,8 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-import static ru.geracimov.otus.java.atmdepartament.money.Denomination.*;
+import static ru.geracimov.otus.java.atmdepartament.money.Denomination.B100;
+import static ru.geracimov.otus.java.atmdepartament.money.Denomination.B500;
 
 public class AtmDepartmentTest {
     public static final SimpleAtm ATM1 = new SimpleAtm(1);
@@ -84,10 +86,16 @@ public class AtmDepartmentTest {
         assertThat(balance).extractingByKey(Currency.RUR).isEqualTo(134000L);
         assertThat(balance).extractingByKey(Currency.USD).isEqualTo(14000L);
 
-        final HashMap<Currency, Map<Denomination, Long>> cash = new HashMap<>();
-        cash.put(Currency.RUR, Map.of(B500, 10L));
-        final HashMap<Currency, Map<Denomination, Long>> cash2 = new HashMap<>();
-        cash2.put(Currency.USD, Map.of(B50, 50L));
+        final HashMap<Currency, CashBundle> cash = new HashMap<>();
+        CashBundle bundle = new CashBundle();
+        bundle.put(new CashBundleItem(B500, 10L));
+        cash.put(Currency.RUR, bundle);
+
+        CashBundle bundle2 = new CashBundle();
+        bundle2.put(new CashBundleItem(B500, 10L));
+        final HashMap<Currency, CashBundle> cash2 = new HashMap<>();
+        cash2.put(Currency.USD, bundle2);
+
 
         ATM3.userInterface().accept(cash);
         assertThat(ATM2.userInterface().accept(cash2)).isEqualTo(cash2);

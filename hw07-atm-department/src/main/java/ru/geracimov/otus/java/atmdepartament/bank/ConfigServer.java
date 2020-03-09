@@ -9,8 +9,6 @@ public interface ConfigServer {
 
     AtmConfiguration loadConfiguration(AtmBackend atm);
 
-    void resetAtmConfiguration();
-
     void resetAtmConfiguration(List<AtmBackend> atmList);
 
 }
