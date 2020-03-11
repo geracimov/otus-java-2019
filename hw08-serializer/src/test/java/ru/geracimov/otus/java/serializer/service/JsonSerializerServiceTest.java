@@ -34,4 +34,13 @@ public class JsonSerializerServiceTest {
         assertThat(serializedJson).isEqualTo(gsonJson);
     }
 
+    @Test
+    public void serializeCustomClass3Test() {
+        Object customClass = new CustomClass3();
+        String serializedJson = jsonSerializer.serialize(customClass);
+        String gsonJson = gson.toJson(customClass);
+
+        assertThat(serializedJson).isEqualTo(gsonJson);
+    }
+
 }

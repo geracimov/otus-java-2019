@@ -13,4 +13,8 @@ public interface VisitorService {
 
     String visit(StringFieldType value);
 
+    String visit(StringCollectionFieldType stringCollectionFieldType);
+
+    String visit(ObjectFieldType objectFieldType);
+
 }
