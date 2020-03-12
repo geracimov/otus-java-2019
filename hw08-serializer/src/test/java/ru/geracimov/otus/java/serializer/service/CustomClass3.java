@@ -1,10 +1,12 @@
 package ru.geracimov.otus.java.serializer.service;
 
 import lombok.ToString;
+import org.assertj.core.util.VisibleForTesting;
 
 import java.util.*;
 
 @ToString
+@VisibleForTesting
 public class CustomClass3 {
 
     private final List<String> strings = new ArrayList<>() {{

@@ -1,8 +1,10 @@
 package ru.geracimov.otus.java.serializer.service;
 
 import lombok.ToString;
+import org.assertj.core.util.VisibleForTesting;
 
 @ToString
+@VisibleForTesting
 public class CustomClass2 {
     float f = Float.MAX_VALUE;
     Float F = Float.MIN_VALUE;

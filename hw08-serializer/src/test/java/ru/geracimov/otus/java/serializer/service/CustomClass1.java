@@ -1,8 +1,10 @@
 package ru.geracimov.otus.java.serializer.service;
 
 import lombok.ToString;
+import org.assertj.core.util.VisibleForTesting;
 
 @ToString
+@VisibleForTesting
 public class CustomClass1 {
     private int intA = 0;
     private int[] arrayFieldInt = {1, 2};
