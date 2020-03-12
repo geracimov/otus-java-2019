@@ -19,7 +19,7 @@ public class MinNotesGiveOutStrategyTest {
     private static GiveOutCalculationStrategy strategy;
 
     @BeforeAll
-    static void beforeAll() {
+    public static void beforeAll() {
         leftovers = new HashMap<>();
         leftovers.put(B500, 10L);
         leftovers.put(B100, 45L);

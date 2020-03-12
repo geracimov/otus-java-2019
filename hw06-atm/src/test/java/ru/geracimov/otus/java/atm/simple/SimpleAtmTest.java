@@ -23,7 +23,7 @@ public class SimpleAtmTest {
     private static SimpleAtm atm;
 
     @BeforeAll
-    static void beforeAll() {
+    public static void beforeAll() {
         atm = new SimpleAtm(3333);
     }
 
