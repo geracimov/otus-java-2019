@@ -5,8 +5,6 @@ import ru.geracimov.otus.java.serializer.type.impl.*;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Collection;
 
 public class JsonSerializerService implements VisitorService {
@@ -21,6 +19,7 @@ public class JsonSerializerService implements VisitorService {
     private final static String EMPTY = "";
 
     public String serialize(Object object) {
+        if (object == null) return NULL;
         return serialize(object, null, this);
     }
 
@@ -29,21 +28,12 @@ public class JsonSerializerService implements VisitorService {
         final Class<?> clazz = object.getClass();
 
         if (clazz.isArray()) {
-            final Class<?> componentType = clazz.getComponentType();
-            if (componentType.isPrimitive()) {
-                sb.append(new PrimitiveArrayFieldType(fieldForObject, object).accept(service));
-            } else if (String.class.isAssignableFrom(componentType)) {
-                sb.append(new StringArrayFieldType(fieldForObject, object).accept(service));
-            } else {
-                for (int i = 0; i < Array.getLength(object); i++) {
-                    sb.append(serialize(Array.get(object, i), fieldForObject, service));
-                }
-            }
+            sb.append(new ArrayFieldType(fieldForObject, object).accept(service));
         } else if (Collection.class.isAssignableFrom(clazz)) {
-            sb.append(new StringCollectionFieldType(fieldForObject, object).accept(service));
-        } else if (clazz.isPrimitive() || Number.class.isAssignableFrom(clazz)) {
+            sb.append(new CollectionFieldType(fieldForObject, object).accept(service));
+        } else if (isBoxingPrimitiveClass(clazz)) {
             sb.append(new PrimitiveFieldType(fieldForObject, object).accept(service));
-        } else if (String.class.isAssignableFrom(clazz)) {
+        } else if (isStringClass(clazz)) {
             sb.append(new StringFieldType(fieldForObject, object).accept(service));
         } else {
             sb.append(new ObjectFieldType(fieldForObject, object).accept(service));
@@ -52,20 +42,15 @@ public class JsonSerializerService implements VisitorService {
     }
 
     @Override
-    @SneakyThrows
-    public String visit(PrimitiveArrayFieldType value) {
-        Object[] objects = new Object[Array.getLength(value.getObject())];
-        for (int i = 0; i < objects.length; i++) {
-            objects[i] = Array.get(value.getObject(), i);
-        }
-        return arrToString(value.getField().getName(), objects, EMPTY);
-    }
+    public String visit(ArrayFieldType value) {
+        final Object object = value.getObject();
+        final int length = Array.getLength(object);
 
-    @Override
-    @SneakyThrows
-    public String visit(StringArrayFieldType value) {
-        final Object[] objects = (Object[]) value.getObject();
-        return arrToString(value.getField().getName(), objects, QUOTE);
+        final Object[] objects = new Object[length];
+        for (int i = 0; i < length; i++) {
+            objects[i] = Array.get(object, i);
+        }
+        return arrToString(value.getField(), objects);
     }
 
     @Override
@@ -86,24 +71,20 @@ public class JsonSerializerService implements VisitorService {
 
     @Override
     @SneakyThrows
-    public String visit(StringCollectionFieldType value) {
-        final String name = value.getField().getName();
-        StringBuilder sb = new StringBuilder(quoteString(name)).append(COLON);
-        final ParameterizedType genericType = (ParameterizedType) value.getField().getGenericType();
-        sb.append(LBRACKET);
-        if (genericType.getActualTypeArguments().length > 0) {
-            final Type actualTypeArgument = genericType.getActualTypeArguments()[0];
-            final Class<?> aClass = Class.forName(actualTypeArgument.getTypeName());
-
-            int i = 0;
-            final Collection<?> objects = (Collection<?>) value.getObject();
-            for (Object o : objects) {
-                sb.append(serialize(aClass.cast(o), null, this));
-                if (++i < objects.size()) sb.append(COMMA);
-            }
+    public String visit(CollectionFieldType value) {
+        StringBuilder sb = new StringBuilder();
+        if (value.getField() != null) {
+            sb.append(quoteString(value.getField().getName())).append(COLON);
         }
-        sb.append(RBRACKET);
-        return sb.toString();
+
+        sb.append(LBRACKET);
+        final Collection<?> objects = (Collection<?>) value.getObject();
+        int i = 0;
+        for (Object o : objects) {
+            sb.append(serialize(o, null, this));
+            if (++i < objects.size()) sb.append(COMMA);
+        }
+        return sb.append(RBRACKET).toString();
     }
 
     @Override
@@ -124,7 +105,7 @@ public class JsonSerializerService implements VisitorService {
             field.setAccessible(true);
             Object fieldValue = field.get(object);
             Class<?> fieldClass = fieldValue.getClass();
-            if (fieldClass.isPrimitive() || Number.class.isAssignableFrom(fieldClass)) {
+            if (isBoxingPrimitiveClass(fieldClass)) {
                 sb.append(new PrimitiveFieldType(field, object).accept(this));
             } else {
                 sb.append(serialize(fieldValue, field, this));
@@ -134,16 +115,20 @@ public class JsonSerializerService implements VisitorService {
         return sb.append(RBRACE).toString();
     }
 
-    private String arrToString(String name, Object[] objects, String wrapper) {
-        StringBuilder sb = new StringBuilder().append(quoteString(name)).append(COLON);
+    private String arrToString(Field field, Object[] objects) {
+        StringBuilder sb = new StringBuilder();
+        if (field != null)
+            sb.append(quoteString(field.getName())).append(COLON);
         if (objects == null)
             return sb.append(NULL).toString();
         if (objects.length == 0)
             return sb.append(LBRACKET + RBRACKET).toString();
 
         sb.append(LBRACKET);
+        String wrapper;
         int i = 0;
         for (Object o : objects) {
+            wrapper = isStringClass(o.getClass()) ? QUOTE : EMPTY;
             sb.append(wrapper).append(o).append(wrapper);
             if (++i < objects.length) sb.append(COMMA);
         }
@@ -154,6 +139,17 @@ public class JsonSerializerService implements VisitorService {
         return object == null
                 ? NULL
                 : QUOTE + object.toString() + QUOTE;
+    }
+
+    private boolean isBoxingPrimitiveClass(Class<?> clazz) {
+        return clazz.isPrimitive()
+                || Number.class.isAssignableFrom(clazz)
+                || Boolean.class.isAssignableFrom(clazz);
+    }
+
+    private boolean isStringClass(Class<?> clazz) {
+        return String.class.isAssignableFrom(clazz)
+                || Character.class.isAssignableFrom(clazz);
     }
 
 }
