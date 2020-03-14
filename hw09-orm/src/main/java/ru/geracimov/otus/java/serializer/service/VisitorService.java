@@ -7,16 +7,14 @@ public interface VisitorService {
 
     String serialize(Object object);
 
-    String visit(PrimitiveArrayFieldType value);
-
-    String visit(StringArrayFieldType value);
-
     String visit(PrimitiveFieldType value);
 
     String visit(StringFieldType value);
 
-    String visit(StringCollectionFieldType stringCollectionFieldType);
+    String visit(CollectionFieldType collectionFieldType);
 
     String visit(ObjectFieldType objectFieldType);
+
+    String visit(ArrayFieldType objectFieldType);
 
 }

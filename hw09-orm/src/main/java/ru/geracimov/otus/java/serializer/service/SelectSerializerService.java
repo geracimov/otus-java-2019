@@ -31,9 +31,9 @@ public class SelectSerializerService implements VisitorService {
         final StringBuilder sb = new StringBuilder();
         final Class<?> clazz = object.getClass();
 
-        if (clazz.isPrimitive() || Number.class.isAssignableFrom(clazz)) {
+        if (isBoxingPrimitiveClass(clazz)) {
             sb.append(new PrimitiveFieldType(fieldForObject, object).accept(service));
-        } else if (String.class.isAssignableFrom(clazz)) {
+        } else if (isStringClass(clazz)) {
             sb.append(new StringFieldType(fieldForObject, object).accept(service));
         } else {
             sb.append(new ObjectFieldType(fieldForObject, object).accept(service));
@@ -42,14 +42,12 @@ public class SelectSerializerService implements VisitorService {
     }
 
     @Override
-    @SneakyThrows
-    public String visit(PrimitiveArrayFieldType value) {
+    public String visit(ArrayFieldType value) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    @SneakyThrows
-    public String visit(StringArrayFieldType value) {
+    public String visit(CollectionFieldType value) {
         throw new UnsupportedOperationException();
     }
 
@@ -67,17 +65,9 @@ public class SelectSerializerService implements VisitorService {
 
     @Override
     @SneakyThrows
-    public String visit(StringCollectionFieldType value) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    @SneakyThrows
     public String visit(ObjectFieldType objectFieldType) {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(SELECT);
         final Object object = objectFieldType.getObject();
-
-        sb.append(SELECT);
 
         int i = 0;
         final Field[] declaredFields = object.getClass().getDeclaredFields();
@@ -85,16 +75,10 @@ public class SelectSerializerService implements VisitorService {
         for (Field field : declaredFields) {
             if (field.getAnnotation(Id.class) != null) fieldId = field;
             field.setAccessible(true);
-            Object fieldValue = field.get(object);
-            Class<?> fieldClass = fieldValue.getClass();
-            if (fieldClass.isPrimitive() || Number.class.isAssignableFrom(fieldClass)) {
-                sb.append(new PrimitiveFieldType(field, object).accept(this));
-            } else {
-                sb.append(serialize(fieldValue, field, this));
-            }
+            sb.append(serialize(field.get(object), field, this));
             if (++i < declaredFields.length) sb.append(COMMA);
         }
-        if (fieldId == null) throw new OrmException("Class does not contains a field, annotated by Id");
+        if (fieldId == null) throw new OrmException("Class does not contains a field, annotated by @Id");
         sb.append(FROM)
                 .append(objectFieldType.getObject().getClass().getSimpleName())
                 .append(WHERE)
@@ -102,6 +86,18 @@ public class SelectSerializerService implements VisitorService {
                 .append(EQUAL)
                 .append(PLACEHOLDER);
         return sb.toString();
+    }
+
+
+    private boolean isBoxingPrimitiveClass(Class<?> clazz) {
+        return clazz.isPrimitive()
+                || Number.class.isAssignableFrom(clazz)
+                || Boolean.class.isAssignableFrom(clazz);
+    }
+
+    private boolean isStringClass(Class<?> clazz) {
+        return String.class.isAssignableFrom(clazz)
+                || Character.class.isAssignableFrom(clazz);
     }
 
 }

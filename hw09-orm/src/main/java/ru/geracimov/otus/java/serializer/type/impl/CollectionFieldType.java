@@ -6,9 +6,9 @@ import ru.geracimov.otus.java.serializer.type.AbstractFieldType;
 
 import java.lang.reflect.Field;
 
-public class PrimitiveArrayFieldType extends AbstractFieldType {
+public class CollectionFieldType extends AbstractFieldType {
 
-    public PrimitiveArrayFieldType(Field field, Object object) {
+    public CollectionFieldType(Field field, Object object) {
         super(field, object);
     }
 
