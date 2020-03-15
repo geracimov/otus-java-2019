@@ -6,4 +6,8 @@ public class OrmException extends RuntimeException {
         super(message);
     }
 
+    public OrmException(Throwable cause) {
+        super(cause);
+    }
+
 }

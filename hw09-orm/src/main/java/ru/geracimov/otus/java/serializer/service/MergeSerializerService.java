@@ -9,21 +9,22 @@ import ru.geracimov.otus.java.serializer.type.impl.*;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringJoiner;
 
 @Slf4j
-public class SelectSerializerService implements VisitorService {
+public class MergeSerializerService implements VisitorService {
     private final static String COMMA = ", ";
-    private final static String EQUAL = " = ";
-    private final static String SELECT = "select ";
-    private final static String FROM = " from ";
-    private final static String WHERE = " where ";
-    private final static String PLACEHOLDER = " ? ";
+    private final static String MERGE = "merge into ";
+    private final static String LBRACKET = "(";
+    private final static String RBRACKET = ")";
+    private final static String VALUES = " values ";
+    private final static String KEY = " key ";
+    private final static String PLACEHOLDER = "?";
 
     private final Map<Class<?>, String> cache = new HashMap<>();
 
     @Override
     public String serialize(Object object) {
-        if (!(object instanceof Class<?>)) throw new OrmException("Object must be an instance of the Class<?>");
         return cache.computeIfAbsent(object.getClass(), (k) -> serialize(object, null, this));
     }
 
@@ -67,25 +68,31 @@ public class SelectSerializerService implements VisitorService {
     @Override
     @SneakyThrows
     public String visit(ObjectFieldType objectFieldType) {
-        StringBuilder sb = new StringBuilder(SELECT);
-        final Class<?> object = (Class<?>) objectFieldType.getObject();
+        StringBuilder sb = new StringBuilder(MERGE);
+        final Object object = objectFieldType.getObject();
+        sb.append(objectFieldType.getObject().getClass().getSimpleName())
+          .append(KEY)
+          .append(LBRACKET);
 
         int i = 0;
-        final Field[] declaredFields = object.getDeclaredFields();
+        final Field[] declaredFields = object.getClass().getDeclaredFields();
+        StringJoiner placeholders = new StringJoiner(COMMA);
         Field fieldId = null;
         for (Field field : declaredFields) {
-            if (field.getAnnotation(Id.class) != null) fieldId = field;
-            field.setAccessible(true);
-            sb.append(serialize(field.getName(), field, this));
-            if (++i < declaredFields.length) sb.append(COMMA);
+            if (field.getAnnotation(Id.class) != null)
+                if (fieldId != null)
+                    throw new OrmException("Class already contains a field, annotated by @Id - " + fieldId.getName());
+                else fieldId = field;
+            placeholders.add(PLACEHOLDER);
         }
         if (fieldId == null) throw new OrmException("Class does not contains a field, annotated by @Id");
-        sb.append(FROM)
-          .append(object.getSimpleName())
-          .append(WHERE)
-          .append(fieldId.getName())
-          .append(EQUAL)
-          .append(PLACEHOLDER);
+        fieldId.setAccessible(true);
+        sb.append(serialize(fieldId.get(object), fieldId, this));
+        sb.append(RBRACKET)
+          .append(VALUES)
+          .append(LBRACKET)
+          .append(placeholders)
+          .append(RBRACKET);
         return sb.toString();
     }
 

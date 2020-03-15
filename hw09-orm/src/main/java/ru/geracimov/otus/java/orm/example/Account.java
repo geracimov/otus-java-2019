@@ -5,13 +5,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.geracimov.otus.java.orm.annotation.Id;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Account {
     @Id
-    private long id;
-    private String name;
-    private int age;
+    private long no;
+    private String type;
+    private BigDecimal rest;
 
 }
