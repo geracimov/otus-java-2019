@@ -2,6 +2,7 @@ package ru.geracimov.otus.java.testing.internal.impl;
 
 import lombok.RequiredArgsConstructor;
 import ru.geracimov.otus.java.testing.annotation.DisplayName;
+import ru.geracimov.otus.java.testing.exception.FrameworkException;
 import ru.geracimov.otus.java.testing.internal.Result;
 import ru.geracimov.otus.java.testing.internal.Results;
 
@@ -45,6 +46,8 @@ public class ResultsImpl implements Results {
                 case SUCCESS:
                     successCount++;
                     break;
+                default:
+                    throw new FrameworkException("ResultState is incorrect " + result.getState());
             }
             printLine(++totalCount, method, result);
         }

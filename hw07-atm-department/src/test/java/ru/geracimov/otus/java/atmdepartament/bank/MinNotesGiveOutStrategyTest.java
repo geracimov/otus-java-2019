@@ -1,16 +1,16 @@
-package ru.geracimov.otus.java.atm.bank;
+package ru.geracimov.otus.java.atmdepartament.bank;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.geracimov.otus.java.atm.exception.AtmMoneyNotEnoughException;
-import ru.geracimov.otus.java.atm.money.Denomination;
+import ru.geracimov.otus.java.atmdepartament.exception.AtmMoneyNotEnoughException;
+import ru.geracimov.otus.java.atmdepartament.money.Denomination;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.*;
-import static ru.geracimov.otus.java.atm.money.Denomination.*;
+import static ru.geracimov.otus.java.atmdepartament.money.Denomination.*;
 
 @DisplayName("Стратегия выдачи купюр минимальным количеством")
 public class MinNotesGiveOutStrategyTest {
@@ -19,7 +19,7 @@ public class MinNotesGiveOutStrategyTest {
     private static GiveOutCalculationStrategy strategy;
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         leftovers = new HashMap<>();
         leftovers.put(B500, 10L);
         leftovers.put(B100, 45L);
