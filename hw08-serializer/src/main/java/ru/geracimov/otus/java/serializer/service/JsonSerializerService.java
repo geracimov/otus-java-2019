@@ -5,7 +5,9 @@ import ru.geracimov.otus.java.serializer.type.impl.*;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
+import java.util.stream.Stream;
 
 public class JsonSerializerService implements VisitorService {
     private final static String QUOTE = "\"";
@@ -100,7 +102,7 @@ public class JsonSerializerService implements VisitorService {
         sb.append(LBRACE);
 
         int i = 0;
-        final Field[] declaredFields = object.getClass().getDeclaredFields();
+        final Field[] declaredFields = getSerializedFields(object);
         for (Field field : declaredFields) {
             field.setAccessible(true);
             Object fieldValue = field.get(object);
@@ -113,6 +115,12 @@ public class JsonSerializerService implements VisitorService {
             if (++i < declaredFields.length) sb.append(COMMA);
         }
         return sb.append(RBRACE).toString();
+    }
+
+    private Field[] getSerializedFields(Object object) {
+        return Stream.of(object.getClass().getDeclaredFields())
+                     .filter(f -> !Modifier.isStatic(f.getModifiers()))
+                     .toArray(Field[]::new);
     }
 
     private String arrToString(Field field, Object[] objects) {
