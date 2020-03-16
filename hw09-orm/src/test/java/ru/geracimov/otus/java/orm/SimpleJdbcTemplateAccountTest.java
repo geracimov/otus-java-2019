@@ -60,7 +60,7 @@ public class SimpleJdbcTemplateAccountTest {
                 .hasMessageContaining("Account with @Id 2 not found");
         assertThatThrownBy(() -> templateAccount.update(account2))
                 .isInstanceOf(JdbcSQLNonTransientException.class)
-                .hasMessageContaining("Нет данных");
+                .hasMessageContaining("No data is available [2000-200]");
         templateAccount.create(account2);
         assertThat(templateAccount.load(2, Account.class)).isEqualTo(account2);
     }

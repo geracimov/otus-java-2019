@@ -58,7 +58,7 @@ public class SimpleJdbcTemplateTest {
                 .hasMessageContaining("User with @Id 2 not found");
         assertThatThrownBy(() -> templateUser.update(user2))
                 .isInstanceOf(JdbcSQLNonTransientException.class)
-                .hasMessageContaining("Нет данных");
+                .hasMessageContaining("No data is available [2000-200]");
         templateUser.create(user2);
         assertThat(templateUser.load(2, User.class)).isEqualTo(user2);
     }
