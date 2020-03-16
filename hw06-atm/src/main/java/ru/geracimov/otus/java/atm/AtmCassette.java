@@ -10,8 +10,8 @@ public interface AtmCassette {
 
     Denomination loadedDenomination();
 
-    Long balance();
+    long balance();
 
-    Long withdraw(long count);
+    long withdraw(long count);
 
 }

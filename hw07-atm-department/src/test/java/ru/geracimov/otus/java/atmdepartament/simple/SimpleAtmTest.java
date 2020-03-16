@@ -1,16 +1,16 @@
-package ru.geracimov.otus.java.atm.simple;
+package ru.geracimov.otus.java.atmdepartament.simple;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.geracimov.otus.java.atm.AtmCashDispenser;
-import ru.geracimov.otus.java.atm.AtmCassette;
-import ru.geracimov.otus.java.atm.AtmConfiguration;
-import ru.geracimov.otus.java.atm.exception.AtmException;
-import ru.geracimov.otus.java.atm.money.Currency;
-import ru.geracimov.otus.java.atm.money.Denomination;
-import ru.geracimov.otus.java.atm.simple.devices.SimpleAtmCashDispenser;
-import ru.geracimov.otus.java.atm.simple.devices.SimpleAtmCassette;
+import ru.geracimov.otus.java.atmdepartament.AtmConfiguration;
+import ru.geracimov.otus.java.atmdepartament.devices.AtmCashDispenser;
+import ru.geracimov.otus.java.atmdepartament.devices.AtmCassette;
+import ru.geracimov.otus.java.atmdepartament.exception.AtmException;
+import ru.geracimov.otus.java.atmdepartament.money.Currency;
+import ru.geracimov.otus.java.atmdepartament.money.Denomination;
+import ru.geracimov.otus.java.atmdepartament.simple.devices.SimpleAtmCashDispenser;
+import ru.geracimov.otus.java.atmdepartament.simple.devices.SimpleAtmCassette;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class SimpleAtmTest {
     private static SimpleAtm atm;
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         atm = new SimpleAtm(3333);
     }
 
