@@ -1,20 +1,24 @@
 package ru.geracimov.otus.java.orm;
 
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ru.geracimov.otus.java.orm.annotation.Id;
 import ru.geracimov.otus.java.orm.exception.OrmException;
-import ru.geracimov.otus.java.serializer.service.*;
+import ru.geracimov.otus.java.serializer.service.VisitorService;
 import ru.otus.jdbc.DbExecutor;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 @Slf4j
+@RequiredArgsConstructor
 public class SimpleJdbcTemplate<T> implements JdbcTemplate<T> {
     private final DbExecutor<T> executor;
     private final Connection connection;
@@ -22,15 +26,7 @@ public class SimpleJdbcTemplate<T> implements JdbcTemplate<T> {
     private final VisitorService insert;
     private final VisitorService update;
     private final VisitorService merge;
-
-    public SimpleJdbcTemplate(DbExecutor<T> executor, Connection connection) {
-        this.executor = executor;
-        this.connection = connection;
-        this.select = new SelectSerializerService();
-        this.insert = new InsertSerializerService();
-        this.update = new UpdateSerializerService();
-        this.merge = new MergeSerializerService();
-    }
+    private final Map<Class<?>, Field[]> classFields = new HashMap<>();
 
     @Override
     @SneakyThrows
@@ -68,7 +64,7 @@ public class SimpleJdbcTemplate<T> implements JdbcTemplate<T> {
     private List<String> getParameters(Object object, boolean idLast) {
         List<String> parameters = new ArrayList<>();
         String id = null;
-        for (Field field : object.getClass().getDeclaredFields()) {
+        for (Field field : getDeclaredFields(object.getClass())) {
             field.setAccessible(true);
             if (idLast && field.getAnnotation(Id.class) != null)
                 id = field.get(object).toString();
@@ -80,6 +76,10 @@ public class SimpleJdbcTemplate<T> implements JdbcTemplate<T> {
         if (idLast)
             parameters.add(id);
         return parameters;
+    }
+
+    private Field[] getDeclaredFields(Class<?> clazz) {
+        return classFields.computeIfAbsent(clazz, Class::getDeclaredFields);
     }
 
     private Function<ResultSet, T> rsHandler(Class<T> clazz) {

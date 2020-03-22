@@ -8,6 +8,10 @@ import org.junit.jupiter.api.Test;
 import ru.geracimov.otus.java.orm.example.User;
 import ru.geracimov.otus.java.orm.exception.OrmException;
 import ru.geracimov.otus.java.orm.utils.TableCreator;
+import ru.geracimov.otus.java.serializer.service.InsertSerializerService;
+import ru.geracimov.otus.java.serializer.service.MergeSerializerService;
+import ru.geracimov.otus.java.serializer.service.SelectSerializerService;
+import ru.geracimov.otus.java.serializer.service.UpdateSerializerService;
 import ru.otus.h2.DataSourceH2;
 import ru.otus.jdbc.DbExecutor;
 
@@ -29,7 +33,12 @@ public class SimpleJdbcTemplateTest {
     public static void beforeAll() {
         DataSource dataSource = new DataSourceH2();
         DbExecutor<User> userDbExecutor = new DbExecutor<>();
-        templateUser = new SimpleJdbcTemplate<>(userDbExecutor, dataSource.getConnection());
+        templateUser = new SimpleJdbcTemplate<>(userDbExecutor,
+                dataSource.getConnection(),
+                new SelectSerializerService(),
+                new InsertSerializerService(),
+                new UpdateSerializerService(),
+                new MergeSerializerService());
         TableCreator.createUserTable(dataSource);
         TableCreator.createAccountTable(dataSource);
     }
