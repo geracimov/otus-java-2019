@@ -5,7 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ru.geracimov.otus.java.orm.annotation.Id;
 import ru.geracimov.otus.java.orm.exception.OrmException;
-import ru.geracimov.otus.java.serializer.service.VisitorService;
+import ru.geracimov.otus.java.serializer.service.SerializerServiceFacade;
 import ru.otus.jdbc.DbExecutor;
 
 import java.lang.reflect.Field;
@@ -22,17 +22,14 @@ import java.util.function.Function;
 public class SimpleJdbcTemplate<T> implements JdbcTemplate<T> {
     private final DbExecutor<T> executor;
     private final Connection connection;
-    private final VisitorService select;
-    private final VisitorService insert;
-    private final VisitorService update;
-    private final VisitorService merge;
+    private final SerializerServiceFacade facade;
     private final Map<Class<?>, Field[]> classFields = new HashMap<>();
 
     @Override
     @SneakyThrows
     public void create(T objectData) {
         final List<String> parameters = getParameters(objectData, false);
-        final String sql = insert.serialize(objectData);
+        final String sql = facade.insert(objectData);
         executor.insertRecord(connection, sql, parameters);
     }
 
@@ -40,7 +37,7 @@ public class SimpleJdbcTemplate<T> implements JdbcTemplate<T> {
     @SneakyThrows
     public void update(T objectData) {
         final List<String> parameters = getParameters(objectData, true);
-        final String sql = update.serialize(objectData);
+        final String sql = facade.update(objectData);
         executor.insertRecord(connection, sql, parameters);
     }
 
@@ -48,16 +45,16 @@ public class SimpleJdbcTemplate<T> implements JdbcTemplate<T> {
     @SneakyThrows
     public void createOrUpdate(T objectData) {
         final List<String> parameters = getParameters(objectData, false);
-        final String sql = merge.serialize(objectData);
+        final String sql = facade.merge(objectData);
         executor.insertRecord(connection, sql, parameters);
     }
 
     @SneakyThrows
     @Override
     public T load(long id, Class<T> clazz) {
-        final String sql = select.serialize(clazz);
+        final String sql = facade.select(clazz);
         return executor.selectRecord(connection, sql, id, rsHandler(clazz))
-                       .orElseThrow(() -> new OrmException(clazz.getName() + " with @Id " + id + " not found"));
+                .orElseThrow(() -> new OrmException(clazz.getName() + " with @Id " + id + " not found"));
     }
 
     @SneakyThrows
