@@ -1,5 +1,6 @@
 package ru.otus.jdbc.sessionmanager;
 
+import ru.otus.core.sessionmanager.DatabaseSession;
 import ru.otus.core.sessionmanager.SessionManager;
 import ru.otus.core.sessionmanager.SessionManagerException;
 
@@ -62,7 +63,7 @@ public class SessionManagerJdbc implements SessionManager {
   }
 
   @Override
-  public DatabaseSessionJdbc getCurrentSession() {
+  public DatabaseSession getCurrentSession() {
     checkConnection();
     return databaseSession;
   }

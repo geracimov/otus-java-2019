@@ -1,36 +1,34 @@
-package ru.geracimov.otus.java.orm;
+package ru.geracimov.otus.java.orm.dao.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ru.geracimov.otus.java.orm.annotation.Id;
+import ru.geracimov.otus.java.orm.dao.JdbcTemplate;
 import ru.geracimov.otus.java.orm.exception.OrmException;
 import ru.geracimov.otus.java.serializer.service.SerializerServiceFacade;
+import ru.otus.core.sessionmanager.SessionManager;
 import ru.otus.jdbc.DbExecutor;
 
 import java.lang.reflect.Field;
-import java.sql.Connection;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Slf4j
 @RequiredArgsConstructor
 public class SimpleJdbcTemplate<T> implements JdbcTemplate<T> {
     private final DbExecutor<T> executor;
-    private final Connection connection;
+    private final SessionManager sessionManager;
     private final SerializerServiceFacade facade;
     private final Map<Class<?>, Field[]> classFields = new HashMap<>();
 
     @Override
     @SneakyThrows
-    public void create(T objectData) {
+    public long create(T objectData) {
         final List<String> parameters = getParameters(objectData, false);
         final String sql = facade.insert(objectData);
-        executor.insertRecord(connection, sql, parameters);
+        return executor.insertRecord(sessionManager.getCurrentSession().getConnection(), sql, parameters);
     }
 
     @Override
@@ -38,7 +36,7 @@ public class SimpleJdbcTemplate<T> implements JdbcTemplate<T> {
     public void update(T objectData) {
         final List<String> parameters = getParameters(objectData, true);
         final String sql = facade.update(objectData);
-        executor.insertRecord(connection, sql, parameters);
+        executor.insertRecord(sessionManager.getCurrentSession().getConnection(), sql, parameters);
     }
 
     @Override
@@ -46,15 +44,14 @@ public class SimpleJdbcTemplate<T> implements JdbcTemplate<T> {
     public void createOrUpdate(T objectData) {
         final List<String> parameters = getParameters(objectData, false);
         final String sql = facade.merge(objectData);
-        executor.insertRecord(connection, sql, parameters);
+        executor.insertRecord(sessionManager.getCurrentSession().getConnection(), sql, parameters);
     }
 
     @SneakyThrows
     @Override
-    public T load(long id, Class<T> clazz) {
+    public Optional<T> load(long id, Class<T> clazz) {
         final String sql = facade.select(clazz);
-        return executor.selectRecord(connection, sql, id, rsHandler(clazz))
-                .orElseThrow(() -> new OrmException(clazz.getName() + " with @Id " + id + " not found"));
+        return executor.selectRecord(sessionManager.getCurrentSession().getConnection(), sql, id, rsHandler(clazz));
     }
 
     @SneakyThrows
