@@ -12,6 +12,6 @@ public class User {
     @Id
     private final long id;
     private final String name;
-    private int age;
+    private final int age;
 
 }
