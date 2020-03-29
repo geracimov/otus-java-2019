@@ -8,10 +8,10 @@ import ru.otus.jdbc.query.Id;
 @Getter
 @EqualsAndHashCode
 @RequiredArgsConstructor
-public class User {
+public class Account {
     @Id
     private final long id;
-    private final String name;
-    private int age;
+    private final String type;
+    private int rest;
 
 }
