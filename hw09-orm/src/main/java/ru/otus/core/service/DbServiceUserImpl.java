@@ -9,7 +9,7 @@ import ru.otus.core.sessionmanager.SessionManager;
 import java.util.Optional;
 
 public class DbServiceUserImpl implements DBServiceUser {
-  private static Logger logger = LoggerFactory.getLogger(DbServiceUserImpl.class);
+  private static final Logger logger = LoggerFactory.getLogger(DbServiceUserImpl.class);
 
   private final UserDao userDao;
 
@@ -26,6 +26,24 @@ public class DbServiceUserImpl implements DBServiceUser {
         sessionManager.commitSession();
 
         logger.info("created user: {}", userId);
+        return userId;
+      } catch (Exception e) {
+        logger.error(e.getMessage(), e);
+        sessionManager.rollbackSession();
+        throw new DbServiceException(e);
+      }
+    }
+  }
+
+  @Override
+  public long updateUser(User user) {
+    try (SessionManager sessionManager = userDao.getSessionManager()) {
+      sessionManager.beginSession();
+      try {
+        long userId = userDao.updateUser(user);
+        sessionManager.commitSession();
+
+        logger.info("updated user: {}", userId);
         return userId;
       } catch (Exception e) {
         logger.error(e.getMessage(), e);

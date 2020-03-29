@@ -8,6 +8,8 @@ public interface DBServiceUser {
 
   long saveUser(User user);
 
+  long updateUser(User user);
+
   Optional<User> getUser(long id);
 
 }

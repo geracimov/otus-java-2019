@@ -9,7 +9,7 @@ import ru.otus.core.sessionmanager.SessionManager;
 import java.util.Optional;
 
 public class DbServiceAccountImpl implements DBServiceAccount {
-  private static Logger logger = LoggerFactory.getLogger(DbServiceAccountImpl.class);
+  private final static Logger logger = LoggerFactory.getLogger(DbServiceAccountImpl.class);
 
   private final AccountDao accountDao;
 
@@ -26,6 +26,24 @@ public class DbServiceAccountImpl implements DBServiceAccount {
         sessionManager.commitSession();
 
         logger.info("created account: {}", accountId);
+        return accountId;
+      } catch (Exception e) {
+        logger.error(e.getMessage(), e);
+        sessionManager.rollbackSession();
+        throw new DbServiceException(e);
+      }
+    }
+  }
+
+  @Override
+  public long updateAccount(Account account) {
+    try (SessionManager sessionManager = accountDao.getSessionManager()) {
+      sessionManager.beginSession();
+      try {
+        long accountId = accountDao.updateAccount(account);
+        sessionManager.commitSession();
+
+        logger.info("updated account: {}", accountId);
         return accountId;
       } catch (Exception e) {
         logger.error(e.getMessage(), e);

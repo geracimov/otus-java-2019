@@ -10,5 +10,7 @@ public interface AccountDao {
 
   long saveAccount(Account account);
 
+  long updateAccount(Account account);
+
   SessionManager getSessionManager();
 }

@@ -1,19 +1,19 @@
 package ru.otus.core.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.experimental.FieldNameConstants;
 import ru.otus.jdbc.query.Id;
 
 import java.math.BigDecimal;
 
-@Getter
-@EqualsAndHashCode
-@RequiredArgsConstructor
+@Data
+@FieldNameConstants
+@AllArgsConstructor
 public class Account {
     @Id
-    private final long id;
-    private final String type;
-    private final BigDecimal rest;
+    private long no;
+    private String type;
+    private BigDecimal rest;
 
 }

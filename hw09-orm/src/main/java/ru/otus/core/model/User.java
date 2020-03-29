@@ -1,17 +1,17 @@
 package ru.otus.core.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.experimental.FieldNameConstants;
 import ru.otus.jdbc.query.Id;
 
-@Getter
-@EqualsAndHashCode
-@RequiredArgsConstructor
+@Data
+@FieldNameConstants
+@AllArgsConstructor
 public class User {
     @Id
-    private final long id;
-    private final String name;
-    private final int age;
+    private long id;
+    private String name;
+    private int age;
 
 }
