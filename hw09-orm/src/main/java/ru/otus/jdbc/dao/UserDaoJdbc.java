@@ -50,7 +50,7 @@ public class UserDaoJdbc implements UserDao {
   @Override
   public long saveUser(User user) {
     try {
-      return dbExecutor.insertRecord(getConnection(), "insert into user(name) values (?,?)", List
+      return dbExecutor.insertRecord(getConnection(), "insert into user(name, age) values (?,?)", List
               .of(user.getName(), String.valueOf(user.getAge())));
     } catch (Exception e) {
       logger.error(e.getMessage(), e);
