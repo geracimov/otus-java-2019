@@ -1,45 +1,59 @@
 package ru.otus.core.model;
 
 
-import javax.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.FieldNameConstants;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Data
 @Entity
-@Table(name = "users")
+@NoArgsConstructor
+@Table(name = "USERS")
+@EqualsAndHashCode(exclude = {"phoneDataSets", "addressDataSet"})
+@ToString(of = {"id", "name"})
+@FieldNameConstants
 public class User {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
-  @Column(name = "id")
-  private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "ID", unique = true, nullable = false)
+    private long id;
 
-  @Column(name = "name")
-  private String name;
+    @Column(name = "NAME")
+    private String name;
 
-  public User() {
-  }
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = {CascadeType.ALL})
+    private List<PhoneDataSet> phoneDataSets;
 
-  public User(long id, String name) {
-    this.id = id;
-    this.name = name;
-  }
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = {CascadeType.ALL})
+    private AddressDataSet addressDataSet;
 
-  public long getId() {
-    return id;
-  }
+    public User(String name) {
+        this.name = name;
+        this.phoneDataSets = new ArrayList<>();
+    }
 
-  public String getName() {
-    return name;
-  }
+    public void setAddressDataSet(AddressDataSet addressDataSet) {
+        this.addressDataSet = addressDataSet;
+        addressDataSet.setUser(this);
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public void addPhoneDataSet(PhoneDataSet phoneDataSet) {
+        this.phoneDataSets.add(phoneDataSet);
+        phoneDataSet.setUser(this);
+    }
 
-  @Override
-  public String toString() {
-    return "User{" +
-        "id=" + id +
-        ", name='" + name + '\'' +
-        '}';
-  }
+    public void removePhoneDataSet(PhoneDataSet phoneDataSet) {
+        if (phoneDataSets.contains(phoneDataSet)) {
+            phoneDataSet.setUser(null);
+            this.phoneDataSets.remove(phoneDataSet);
+        }
+    }
+
 }
