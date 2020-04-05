@@ -14,9 +14,9 @@ import ru.otus.h2.DataSourceH2;
 import ru.otus.h2.TableCreator;
 import ru.otus.jdbc.DbExecutor;
 import ru.otus.jdbc.dao.AccountDaoJdbc;
+import ru.otus.jdbc.dao.JdbcMapper;
 import ru.otus.jdbc.dao.UserDaoJdbc;
-import ru.otus.jdbc.query.JdbcSqlMaker;
-import ru.otus.jdbc.query.JdbcSqlMakerImpl;
+import ru.otus.jdbc.query.MetaDataSource;
 import ru.otus.jdbc.sessionmanager.SessionManagerJdbc;
 
 import javax.sql.DataSource;
@@ -31,14 +31,16 @@ public abstract class AbstractTest {
     protected final static User USER1 = new User(1L, "1user1", 101);
     protected final static User USER2 = new User(2L, "2user2", 102);
 
-    protected final JdbcSqlMaker<User> userJdbcSqlMaker = new JdbcSqlMakerImpl<>(User.class);
-    protected final JdbcSqlMaker<Account> accountJdbcSqlMaker = new JdbcSqlMakerImpl<>(Account.class);
+    protected static MetaDataSource metaData;
+    protected static JdbcMapper jdbcMapper;
     protected DBServiceUser userService;
     protected DBServiceAccount accountService;
 
     @BeforeAll
     static void beforeAll() {
         DATASOURCE = new DataSourceH2();
+        metaData = new MetaDataSource();
+        jdbcMapper = new JdbcMapper();
         TableCreator.createUserTable(DATASOURCE);
         TableCreator.createAccountTable(DATASOURCE);
     }
@@ -48,8 +50,8 @@ public abstract class AbstractTest {
         SessionManagerJdbc sessionManager = new SessionManagerJdbc(DATASOURCE);
         DbExecutor<User> dbUserExecutor = new DbExecutor<>();
         DbExecutor<Account> dbAccountExecutor = new DbExecutor<>();
-        UserDao userDao = new UserDaoJdbc(sessionManager, dbUserExecutor, userJdbcSqlMaker);
-        AccountDao accountDao = new AccountDaoJdbc(sessionManager, dbAccountExecutor, accountJdbcSqlMaker);
+        UserDao userDao = new UserDaoJdbc(sessionManager, dbUserExecutor, metaData, jdbcMapper);
+        AccountDao accountDao = new AccountDaoJdbc(sessionManager, dbAccountExecutor, metaData, jdbcMapper);
 
         userService = new DbServiceUserImpl(userDao);
         accountService = new DbServiceAccountImpl(accountDao);
