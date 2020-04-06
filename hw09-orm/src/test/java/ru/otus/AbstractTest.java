@@ -23,7 +23,7 @@ import javax.sql.DataSource;
 import java.math.BigDecimal;
 
 public abstract class AbstractTest {
-    private static DataSource DATASOURCE;
+    private final static DataSource DATASOURCE = new DataSourceH2();
     protected final static Account ACCOUNT0 = new Account(0L, "0account0", BigDecimal.valueOf(0));
     protected final static Account ACCOUNT1 = new Account(1L, "1account1", BigDecimal.valueOf(1));
     protected final static Account ACCOUNT2 = new Account(2L, "2account2", BigDecimal.valueOf(2));
@@ -38,9 +38,8 @@ public abstract class AbstractTest {
 
     @BeforeAll
     static void beforeAll() {
-        DATASOURCE = new DataSourceH2();
         metaData = new MetaDataSource();
-        jdbcMapper = new JdbcMapper();
+        jdbcMapper = new JdbcMapper(metaData);
         TableCreator.createUserTable(DATASOURCE);
         TableCreator.createAccountTable(DATASOURCE);
     }

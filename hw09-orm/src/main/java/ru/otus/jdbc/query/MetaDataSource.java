@@ -1,5 +1,6 @@
 package ru.otus.jdbc.query;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -14,6 +15,8 @@ public class MetaDataSource {
     private final Map<String, String> selectQueries;
     private final Map<String, String> insertQueries;
     private final Map<String, String> updateQueries;
+    private final Map<String, Constructor<?>> classConstructors;
+    private final Map<String, Field[]> classFields;
 
     public MetaDataSource() {
         this.allFieldsNames = new HashMap<>();
@@ -23,6 +26,8 @@ public class MetaDataSource {
         this.selectQueries = new HashMap<>();
         this.insertQueries = new HashMap<>();
         this.updateQueries = new HashMap<>();
+        this.classConstructors = new HashMap<>();
+        this.classFields = new HashMap<>();
     }
 
     public String getTableName(Class<?> clazz) {
@@ -51,6 +56,14 @@ public class MetaDataSource {
 
     public String getUpdateQuery(Class<?> clazz) {
         return getOrLoad(updateQueries, clazz);
+    }
+
+    public Constructor<?> getConstructor(Class<?> clazz) {
+        return getOrLoad(classConstructors, clazz);
+    }
+
+    public Field[] getFields(Class<?> clazz) {
+        return getOrLoad(classFields, clazz);
     }
 
     private <V> V getOrLoad(Map<String, V> map, Class<?> clazz) throws MetaDataSourceException {
@@ -90,6 +103,12 @@ public class MetaDataSource {
         String[] fieldNamesExceptId = Arrays.stream(fieldNamesExceptIdNull)
                                             .filter(Objects::nonNull)
                                             .toArray(String[]::new);
+        try {
+            classConstructors.put(clazzName, clazz.getConstructor());
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("Class doesn't have default constructor");
+        }
+        classFields.put(clazzName, declaredFields);
         fieldIdNames.put(clazzName, idFieldName);
         allFieldsNames.put(clazzName, fieldNames);
         allFieldsNamesExceptId.put(clazzName, fieldNamesExceptId);
