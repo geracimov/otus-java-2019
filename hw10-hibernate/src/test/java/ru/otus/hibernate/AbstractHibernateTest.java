@@ -65,4 +65,14 @@ public abstract class AbstractHibernateTest {
         return stats.getEntityStatistics(User.class.getName());
     }
 
+    protected EntityStatistics getPhoneDataSetStatistics() {
+        Statistics stats = sessionFactory.getStatistics();
+        return stats.getEntityStatistics(PhoneDataSet.class.getName());
+    }
+
+    protected EntityStatistics getAddressDataSetStatistics() {
+        Statistics stats = sessionFactory.getStatistics();
+        return stats.getEntityStatistics(AddressDataSet.class.getName());
+    }
+
 }

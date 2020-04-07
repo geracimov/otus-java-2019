@@ -1,6 +1,5 @@
 package ru.otus.hibernate.dao;
 
-import org.hibernate.LazyInitializationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,9 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SuppressWarnings("ResultOfMethodCallIgnored")
 @DisplayName("Dao для работы с пользователями должно ")
 public class UserDaoHibernateTest extends AbstractHibernateTest {
     private SessionManagerHibernate sessionManagerHibernate;
@@ -46,10 +43,8 @@ public class UserDaoHibernateTest extends AbstractHibernateTest {
                              .hasFieldOrPropertyWithValue(User.Fields.id, expectedUser.getId())
                              .hasFieldOrPropertyWithValue(User.Fields.name, expectedUser.getName())
                              .hasFieldOrPropertyWithValue(User.Fields.addressDataSet, null);
-
+        assertThat(mayBeUser.get().getPhoneDataSets()).isNotNull().hasSize(0);
         assertThat(getUserStatistics().getLoadCount()).isEqualTo(1);
-        assertThatThrownBy(() -> mayBeUser.get().getPhoneDataSets().get(0))
-                .isInstanceOf(LazyInitializationException.class);
     }
 
     @DisplayName(" корректно сохранять пользователя")
