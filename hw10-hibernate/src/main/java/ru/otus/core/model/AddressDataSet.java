@@ -23,8 +23,7 @@ public class AddressDataSet {
     @Column(name = "NUMBER", length = 1024, nullable = false)
     private String street;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    @JoinColumn(name = "USER_ID")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "addressDataSet", cascade = {CascadeType.ALL})
     private User user;
 
     public AddressDataSet(String street) {

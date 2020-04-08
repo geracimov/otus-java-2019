@@ -31,7 +31,8 @@ public class User {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = {CascadeType.ALL})
     private List<PhoneDataSet> phoneDataSets;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = {CascadeType.ALL})
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinColumn(name = "ADDRESS_ID")
     private AddressDataSet addressDataSet;
 
     public User(String name) {
