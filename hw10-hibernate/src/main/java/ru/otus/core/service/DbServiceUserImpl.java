@@ -1,5 +1,6 @@
 package ru.otus.core.service;
 
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.core.dao.UserDao;
@@ -44,6 +45,24 @@ public class DbServiceUserImpl implements DBServiceUser {
         Optional<User> userOptional = userDao.findById(id);
 
         logger.info("user: {}", userOptional.orElse(null));
+        return userOptional;
+      } catch (Exception e) {
+        logger.error(e.getMessage(), e);
+        sessionManager.rollbackSession();
+      }
+      return Optional.empty();
+    }
+  }
+
+  @Override
+  public Optional<User> getUserWithAddress(long id) {
+    try (SessionManager sessionManager = userDao.getSessionManager()) {
+      sessionManager.beginSession();
+      try {
+        Optional<User> userOptional = userDao.findById(id);
+        User user = userOptional.orElse(null);
+        if (user!=null) Hibernate.initialize(user.getAddressDataSet());
+        logger.info("user: {}", user);
         return userOptional;
       } catch (Exception e) {
         logger.error(e.getMessage(), e);

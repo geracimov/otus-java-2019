@@ -35,7 +35,7 @@ public class DbServiceUserIntegrationTest extends AbstractHibernateTest {
         final long savedId = serviceUser.saveUser(user);
         assertThat(savedId).isGreaterThan(0);
 
-        final Optional<User> savedUser = serviceUser.getUser(savedId);
+        final Optional<User> savedUser = serviceUser.getUserWithAddress(savedId);
         assertThat(savedUser).isNotEmpty().get().isEqualToIgnoringGivenFields(user, "phoneDataSets");
         assertThat(savedUser.get().getPhoneDataSets())
                 .isNotNull()
