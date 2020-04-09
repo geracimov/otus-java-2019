@@ -27,4 +27,8 @@ public class CacheManager {
         return (HwCache<K, V>) this.caches.get(cacheName);
     }
 
+    public void clear(){
+        caches.clear();
+    }
+
 }
