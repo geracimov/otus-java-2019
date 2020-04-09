@@ -15,7 +15,8 @@ public class HWCacheDemo {
     }
 
     private void demo() {
-        HwCache<Integer, Integer> cache = new MyCache<>();
+        CacheManager cacheManager = new CacheManager();
+        HwCache<Integer, Integer> cache = cacheManager.createCache("integerCache", Integer.class, Integer.class);
 
         // пример, когда Idea предлагает упростить код, при этом может появиться "спец"-эффект
         @SuppressWarnings({"Convert2Diamond", "Convert2Lambda"})
