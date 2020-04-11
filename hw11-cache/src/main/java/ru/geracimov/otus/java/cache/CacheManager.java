@@ -2,7 +2,6 @@ package ru.geracimov.otus.java.cache;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 @SuppressWarnings("unchecked")
 public class CacheManager {
@@ -16,7 +15,7 @@ public class CacheManager {
         if (this.caches.get(cacheName) != null) {
             throw new IllegalArgumentException("Cache '" + cacheName + "' already exists");
         } else {
-            return (HwCache<K, V>) this.caches.computeIfAbsent(cacheName, s -> new MyCache<K, V>(new WeakHashMap<>()));
+            return (HwCache<K, V>) this.caches.computeIfAbsent(cacheName, s -> new MyCache<K, V>());
         }
     }
 

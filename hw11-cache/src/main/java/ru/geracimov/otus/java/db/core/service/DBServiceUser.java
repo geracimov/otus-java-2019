@@ -12,6 +12,4 @@ public interface DBServiceUser {
 
   Optional<User> getUserWithAddress(long id);
 
-  boolean useCache();
-
 }

@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("Сервис для работы с пользователями в рамках БД должен ")
 @SuppressWarnings({"Convert2Diamond", "Convert2Lambda"})
 public class DbServiceUserIntegrationTest extends AbstractHibernateTest {
-    private DbServiceUserImpl serviceUser;
+    private DbServiceUserCacheProxy serviceUser;
 
     @BeforeEach
     @Override
@@ -26,7 +26,7 @@ public class DbServiceUserIntegrationTest extends AbstractHibernateTest {
         super.setUp();
         SessionManagerHibernate sessionManagerHibernate = new SessionManagerHibernate(sessionFactory);
         UserDaoHibernate userDaoHibernate = new UserDaoHibernate(sessionManagerHibernate);
-        serviceUser = new DbServiceUserImpl(userDaoHibernate);
+        serviceUser = new DbServiceUserCacheProxy(new DbServiceUserImpl(userDaoHibernate), cacheManager);
 
         HwCache<Long, User> userCache = cacheManager.createCache("userCache", Long.class, User.class);
         HwListener<Long, User> listener = new HwListener<Long, User>() {
@@ -36,7 +36,6 @@ public class DbServiceUserIntegrationTest extends AbstractHibernateTest {
             }
         };
         userCache.addListener(listener);
-        serviceUser.setCache(userCache);
     }
 
 
