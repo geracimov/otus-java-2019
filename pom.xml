@@ -22,6 +22,7 @@
         <module>hw09-orm</module>
         <module>hw10-hibernate</module>
         <module>hw11-cache</module>
+        <module>hw12-web</module>
     </modules>
 
     <properties>
@@ -41,8 +42,10 @@
         <gson.version>2.8.6</gson.version>
         <hibernate-core.version>5.4.8.Final</hibernate-core.version>
         <reflections.version>0.9.9</reflections.version>
-        <maven-jacoco.version>0.8.5</maven-jacoco.version>
+        <jedis.version>3.2.0</jedis.version>
+        <jackson-core.version>2.10.3</jackson-core.version>
         <!--test-->
+        <maven-jacoco.version>0.8.5</maven-jacoco.version>
         <junit-jupiter.version>5.6.0</junit-jupiter.version>
         <assertj-core.version>3.14.0</assertj-core.version>
         <mockito-core.version>3.3.0</mockito-core.version>
@@ -53,6 +56,8 @@
         <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
         <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
         <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+        <freemarker.version>2.3.29</freemarker.version>
+        <jetty.version>9.4.27.v20200227</jetty.version>
     </properties>
 
     <dependencyManagement>
@@ -141,6 +146,36 @@
                 <artifactId>mockito-junit-jupiter</artifactId>
                 <version>${mockito-core.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${jedis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>${freemarker.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-server</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-webapp</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-security</artifactId>
+                <version>${jetty.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
