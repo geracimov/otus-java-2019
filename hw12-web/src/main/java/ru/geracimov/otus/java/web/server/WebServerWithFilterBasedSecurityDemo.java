@@ -1,5 +1,6 @@
 package ru.geracimov.otus.java.web.server;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import redis.clients.jedis.JedisPool;
@@ -35,7 +36,8 @@ public class WebServerWithFilterBasedSecurityDemo {
         final RedisServer redisServer = new RedisServer(REDIS_SERVER_PORT);
         redisServer.start();
         JedisPool pool = new JedisPool();
-        UserDao userDao = new RedisUserDao(pool);
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserDao userDao = new RedisUserDao(pool, objectMapper);
         userDao.saveUser(new User(0, "admin", "admin", "adminPassword"));
 
         Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();

@@ -1,5 +1,6 @@
 package ru.geracimov.otus.java.web.server.dao;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -38,7 +39,8 @@ class RedisUserDaoTest {
     @BeforeEach
     public void setUp() {
         final JedisPool pool = new JedisPool();
-        dao = new RedisUserDao(pool);
+        final ObjectMapper mapper = new ObjectMapper();
+        dao = new RedisUserDao(pool, mapper);
     }
 
     @Test

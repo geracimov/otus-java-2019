@@ -26,10 +26,10 @@ public class RedisUserDao implements UserDao {
     private final JedisPool jedisPool;
     private final Random random;
 
-    public RedisUserDao(@NonNull JedisPool jedisPool) {
+    public RedisUserDao(@NonNull JedisPool jedisPool, ObjectMapper objectMapper) {
         this.jedisPool = jedisPool;
         this.random = new Random();
-        this.mapper = new ObjectMapper();
+        this.mapper = objectMapper;
         this.mapper.setSerializationInclusion(JsonInclude.Include.USE_DEFAULTS);
         this.mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }
@@ -84,7 +84,7 @@ public class RedisUserDao implements UserDao {
             user.setId(getId());
         }
         @Cleanup Jedis jedis = jedisPool.getResource();
-        if (findByLogin(user.getLogin()).isPresent()) {
+        if (jedis.exists(prepareLogin(user.getLogin()))) {
             throw new UserDaoException("Login already exists");
         }
         final Transaction multi = jedis.multi();
