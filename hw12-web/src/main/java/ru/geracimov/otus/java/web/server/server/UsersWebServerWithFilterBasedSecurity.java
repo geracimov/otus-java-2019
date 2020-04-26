@@ -5,7 +5,7 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import ru.geracimov.otus.java.web.server.dao.UserDao;
+import ru.geracimov.otus.java.web.server.repository.UserDao;
 import ru.geracimov.otus.java.web.server.services.TemplateProcessor;
 import ru.geracimov.otus.java.web.server.services.UserAuthService;
 import ru.geracimov.otus.java.web.server.servlet.AuthorizationFilter;
