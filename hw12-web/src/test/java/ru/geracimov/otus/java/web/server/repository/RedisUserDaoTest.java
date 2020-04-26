@@ -1,4 +1,4 @@
-package ru.geracimov.otus.java.web.server.dao;
+package ru.geracimov.otus.java.web.server.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;

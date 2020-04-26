@@ -1,4 +1,4 @@
-package ru.geracimov.otus.java.web.server.dao;
+package ru.geracimov.otus.java.web.server.repository;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
