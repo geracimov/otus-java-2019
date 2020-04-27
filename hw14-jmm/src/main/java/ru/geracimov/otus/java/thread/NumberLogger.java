@@ -1,34 +1,33 @@
-package ru.geracimov.otus.java.thread.dance;
+package ru.geracimov.otus.java.thread;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StepDance implements Dance {
-    private static final Logger LOGGER = LoggerFactory.getLogger(StepDance.class);
+public class NumberLogger {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NumberLogger.class);
+    private final Object monitor = new Object();
     private final int firstStep;
     private final int lastStep;
-    private final Object monitor = new Object();
     private Direction direction;
     private String lastStepName;
 
-    public StepDance(int firstStep, int lastStep) {
+    public NumberLogger(int firstStep, int lastStep) {
         this.firstStep = firstStep;
         this.lastStep = lastStep;
         direction = Direction.FORWARD;
     }
 
-    @SuppressWarnings("InfiniteLoopStatement")
-    public void doDance(String name, int delay) {
-        assert name != null;
+    public void printNumber(int delay) {
         int step = firstStep;
-        while (true) {
+        while (!Thread.currentThread().isInterrupted()) {
             synchronized (monitor) {
-                if (!name.equals(lastStepName)) {
+                String threadName = Thread.currentThread().getName();
+                if (!threadName.equals(lastStepName)) {
                     LOGGER.info("{}", step);
                     if (step == firstStep) direction = Direction.FORWARD;
                     if (step == lastStep) direction = Direction.BACK;
                     step = step + direction.getInc();
-                    lastStepName = name;
+                    lastStepName = threadName;
                 }
             }
             sleep(delay);

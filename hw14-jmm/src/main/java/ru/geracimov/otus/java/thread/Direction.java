@@ -1,4 +1,4 @@
-package ru.geracimov.otus.java.thread.dance;
+package ru.geracimov.otus.java.thread;
 
 public enum Direction {
     FORWARD {
