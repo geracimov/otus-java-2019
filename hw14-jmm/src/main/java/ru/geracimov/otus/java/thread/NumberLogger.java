@@ -9,7 +9,6 @@ public class NumberLogger {
     private final int firstStep;
     private final int lastStep;
     private Direction direction;
-    private String lastStepName;
 
     public NumberLogger(int firstStep, int lastStep) {
         this.firstStep = firstStep;
@@ -21,14 +20,11 @@ public class NumberLogger {
         int step = firstStep;
         while (!Thread.currentThread().isInterrupted()) {
             synchronized (monitor) {
-                String threadName = Thread.currentThread().getName();
-                if (!threadName.equals(lastStepName)) {
-                    LOGGER.info("{}", step);
-                    if (step == firstStep) direction = Direction.FORWARD;
-                    if (step == lastStep) direction = Direction.BACK;
-                    step = step + direction.getInc();
-                    lastStepName = threadName;
-                }
+                LOGGER.info("{}", step);
+                if (step == firstStep) direction = Direction.FORWARD;
+                if (step == lastStep) direction = Direction.BACK;
+                step = step + direction.getInc();
+                switchThread(monitor);
             }
             sleep(delay);
         }
@@ -37,6 +33,15 @@ public class NumberLogger {
     private static void sleep(int time) {
         try {
             Thread.sleep(time);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void switchThread(Object monitor) {
+        try {
+            monitor.notify();
+            monitor.wait();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
