@@ -1,19 +1,16 @@
 package ru.geracimov.otus.java.thread;
 
 public enum Direction {
-    FORWARD {
-        @Override
-        public int getInc() {
-            return 1;
-        }
-    },
-    BACK {
-        @Override
-        public int getInc() {
-            return -1;
-        }
-    };
+    FORWARD(1), BACK(-1);
 
-    public abstract int getInc();
+    private final int inc;
+
+    Direction(int inc) {
+        this.inc = inc;
+    }
+
+    public int getInc() {
+        return inc;
+    }
 
 }
