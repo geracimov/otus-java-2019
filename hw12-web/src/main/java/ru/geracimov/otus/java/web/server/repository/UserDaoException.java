@@ -1,4 +1,4 @@
-package ru.geracimov.otus.java.web.server.dao;
+package ru.geracimov.otus.java.web.server.repository;
 
 public class UserDaoException extends RuntimeException {
     public UserDaoException(Exception ex) {

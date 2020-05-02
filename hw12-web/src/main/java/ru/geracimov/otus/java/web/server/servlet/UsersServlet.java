@@ -1,6 +1,6 @@
 package ru.geracimov.otus.java.web.server.servlet;
 
-import ru.geracimov.otus.java.web.server.dao.UserDao;
+import ru.geracimov.otus.java.web.server.repository.UserDao;
 import ru.geracimov.otus.java.web.server.model.User;
 import ru.geracimov.otus.java.web.server.services.TemplateProcessor;
 

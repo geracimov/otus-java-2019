@@ -1,7 +1,7 @@
 package ru.geracimov.otus.java.web.server.services;
 
 
-import ru.geracimov.otus.java.web.server.dao.UserDao;
+import ru.geracimov.otus.java.web.server.repository.UserDao;
 
 public class UserAuthServiceImpl implements UserAuthService {
 
