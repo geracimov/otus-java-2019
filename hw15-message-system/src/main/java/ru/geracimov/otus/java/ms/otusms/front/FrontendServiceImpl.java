@@ -2,6 +2,7 @@ package ru.geracimov.otus.java.ms.otusms.front;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.geracimov.otus.java.ms.model.User;
 import ru.geracimov.otus.java.ms.otusms.messagesystem.Message;
 import ru.geracimov.otus.java.ms.otusms.messagesystem.MessageType;
 import ru.geracimov.otus.java.ms.otusms.messagesystem.MsClient;
@@ -28,6 +29,20 @@ public class FrontendServiceImpl implements FrontendService {
     @Override
     public void getUserData(long userId, Consumer<String> dataConsumer) {
         Message outMsg = msClient.produceMessage(databaseServiceClientName, userId, MessageType.USER_DATA);
+        consumerMap.put(outMsg.getId(), dataConsumer);
+        msClient.sendMessage(outMsg);
+    }
+
+    @Override
+    public void getUserListData(Consumer<String> dataConsumer) {
+        Message outMsg = msClient.produceMessage(databaseServiceClientName, null, MessageType.USER_LIST);
+        consumerMap.put(outMsg.getId(), dataConsumer);
+        msClient.sendMessage(outMsg);
+    }
+
+    @Override
+    public void saveUserData(User user, Consumer<String> dataConsumer) {
+        Message outMsg = msClient.produceMessage(databaseServiceClientName, user, MessageType.USER_SAVE);
         consumerMap.put(outMsg.getId(), dataConsumer);
         msClient.sendMessage(outMsg);
     }

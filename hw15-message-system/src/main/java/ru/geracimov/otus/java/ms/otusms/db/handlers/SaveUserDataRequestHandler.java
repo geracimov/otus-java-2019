@@ -12,20 +12,19 @@ import ru.geracimov.otus.java.ms.services.UserService;
 import java.util.Optional;
 
 
-public class GetUserDataRequestHandler implements RequestHandler {
+public class SaveUserDataRequestHandler implements RequestHandler {
     private final UserService userService;
     private final ObjectMapper objectMapper;
 
-    public GetUserDataRequestHandler(UserService userService, ObjectMapper objectMapper) {
+    public SaveUserDataRequestHandler(UserService userService, ObjectMapper objectMapper) {
         this.userService = userService;
         this.objectMapper = objectMapper;
     }
 
     @Override
     public Optional<Message> handle(Message msg) {
-        long id = Serializers.deserialize(msg.getPayload(), Long.class);
-        final Optional<User> userOptional = userService.findById(id);
-        final User user = userOptional.orElse(null);
+        User user = Serializers.deserialize(msg.getPayload(), User.class);
+        userService.saveUser(user);
         try {
             final String value = objectMapper.writeValueAsString(user);
             return Optional.of(new Message(msg.getTo(), msg.getFrom(), msg.getId(), MessageType.USER_DATA.getValue(), Serializers.serialize(value)));
