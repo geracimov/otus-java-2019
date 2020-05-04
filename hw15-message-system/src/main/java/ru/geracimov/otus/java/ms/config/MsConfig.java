@@ -44,6 +44,7 @@ public class MsConfig {
         frontendMsClient.addHandler(MessageType.USER_DATA, new GetUserDataResponseHandler(frontendService));
         frontendMsClient.addHandler(MessageType.USER_LIST, new GetUserDataResponseHandler(frontendService));
         frontendMsClient.addHandler(MessageType.USER_SAVE, new GetUserDataResponseHandler(frontendService));
+        frontendMsClient.addHandler(MessageType.USER_SAVE_ERROR, new GetUserDataResponseHandler(frontendService));
         messageSystem.addClient(frontendMsClient);
         return frontendMsClient;
     }

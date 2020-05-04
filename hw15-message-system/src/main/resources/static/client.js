@@ -31,7 +31,11 @@ $(()=> {
         stompClient.connect({}, (frame) => {
             console.log('Connected: ' + frame);
             stompClient.subscribe('/ws/user/queue'  , (response) => {
+            try {
                 renderUsers(JSON.parse(response.body));
+            } catch (e){
+                alert(response.body);
+            }
             });
             stompClient.subscribe('/ws/user/errors'  , (response) => {
                 alert(response.body);

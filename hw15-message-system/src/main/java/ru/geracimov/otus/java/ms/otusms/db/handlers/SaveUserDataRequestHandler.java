@@ -7,6 +7,7 @@ import ru.geracimov.otus.java.ms.otusms.common.Serializers;
 import ru.geracimov.otus.java.ms.otusms.messagesystem.Message;
 import ru.geracimov.otus.java.ms.otusms.messagesystem.MessageType;
 import ru.geracimov.otus.java.ms.otusms.messagesystem.RequestHandler;
+import ru.geracimov.otus.java.ms.repository.UserDaoException;
 import ru.geracimov.otus.java.ms.services.UserService;
 
 import java.util.Optional;
@@ -24,10 +25,12 @@ public class SaveUserDataRequestHandler implements RequestHandler {
     @Override
     public Optional<Message> handle(Message msg) {
         User user = Serializers.deserialize(msg.getPayload(), User.class);
-        userService.saveUser(user);
         try {
+            userService.saveUser(user);
             final String value = objectMapper.writeValueAsString(user);
             return Optional.of(new Message(msg.getTo(), msg.getFrom(), msg.getId(), MessageType.USER_DATA.getValue(), Serializers.serialize(value)));
+        } catch (UserDaoException e) {
+            return Optional.of(new Message(msg.getTo(), msg.getFrom(), msg.getId(), MessageType.USER_SAVE_ERROR.getValue(), Serializers.serialize(e.getMessage())));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
