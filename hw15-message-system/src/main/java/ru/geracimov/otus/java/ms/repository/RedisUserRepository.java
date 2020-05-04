@@ -84,6 +84,9 @@ public class RedisUserRepository implements UserRepository {
         if (user.getId() == 0) {
             user.setId(getId());
         }
+        if (user.getLogin() == null || user.getLogin().isEmpty()){
+            throw new UserDaoException("Login cannot be null");
+        }
         @Cleanup Jedis jedis = jedisPool.getResource();
         if (jedis.exists(prepareLogin(user.getLogin()))) {
             throw new UserDaoException("Login already exists");
