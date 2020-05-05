@@ -4,6 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>starter</module>
+        <module>frontend</module>
+        <module>messagesystem</module>
+        <module>backend</module>
+    </modules>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -12,11 +21,14 @@
     </parent>
 
     <artifactId>hw16-multiprocess</artifactId>
+    <groupId>ru.geracimov.otus.java</groupId>
+    <version>${revision}</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>13</maven.compiler.source>
         <maven.compiler.target>13</maven.compiler.target>
+        <revision>1.0-SNAPSHOT</revision>
     </properties>
 
     <dependencies>

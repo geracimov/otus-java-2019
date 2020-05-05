@@ -1,13 +1,12 @@
-package ru.geracimov.otus.java.multiprocess;
+package ru.geracimov.otus.java.multiprocess.messagesystem;
+
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MultiprocessApplication {
-
+public class MessageSystemApplication {
     public static void main( String[] args ) {
-        SpringApplication.run( MultiprocessApplication.class, args );
+        SpringApplication.run( MessageSystemApplication.class, args );
     }
-
 }
