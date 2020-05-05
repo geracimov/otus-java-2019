@@ -30,7 +30,7 @@ public class GreatBusinessLogicTest {
     @Test
     public void doSomethingAgainOriginalTest() {
         original.doSomethingAgain(5555);
-        assertThat(myOutput.toString()).isEqualTo("doSomethingAgain logic started\n" +
+        assertThat(myOutput.toString()).isEqualToIgnoringNewLines("doSomethingAgain logic started\n" +
                 "Do work...  completed!\n");
 
     }
@@ -38,7 +38,7 @@ public class GreatBusinessLogicTest {
     @Test
     public void doSomethingAgainProxyTest() {
         proxy.doSomethingAgain(6666);
-        assertThat(myOutput.toString()).isEqualTo("executed method: doSomethingAgain, param: [6666]\n" +
+        assertThat(myOutput.toString()).isEqualToIgnoringNewLines("executed method: doSomethingAgain, param: [6666]\n" +
                 "doSomethingAgain logic started\n" +
                 "Do work...  completed!\n");
     }
