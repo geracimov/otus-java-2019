@@ -5,15 +5,15 @@ import ru.geracimov.otus.java.ms.model.User;
 
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public interface FrontendService {
-    void getUserData(long userId, Consumer<String> dataConsumer);
+    void getUserData(long userId, BiConsumer<Boolean, String> dataConsumer);
 
-    void getUserListData(Consumer<String> dataConsumer);
+    void getUserListData(BiConsumer<Boolean, String> dataConsumer);
 
-    void saveUserData(User user, Consumer<String> dataConsumer);
+    void saveUserData(User user, BiConsumer<Boolean, String> dataConsumer);
 
-    <T> Optional<Consumer<T>> takeConsumer(UUID sourceMessageId, Class<T> tClass);
+    <E extends Boolean, T> Optional<BiConsumer<E, T>> takeConsumer(UUID sourceMessageId, Class<T> tClass);
 }
 
