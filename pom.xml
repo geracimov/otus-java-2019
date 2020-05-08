@@ -25,6 +25,7 @@
         <module>hw12-web</module>
         <module>hw13-ioc</module>
         <module>hw14-jmm</module>
+        <module>hw15-message-system</module>
     </modules>
 
     <properties>
@@ -46,6 +47,7 @@
         <reflections.version>0.9.9</reflections.version>
         <jedis.version>3.2.0</jedis.version>
         <jackson-core.version>2.10.3</jackson-core.version>
+        <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
         <!--test-->
         <maven-jacoco.version>0.8.5</maven-jacoco.version>
         <junit-jupiter.version>5.6.0</junit-jupiter.version>
@@ -217,6 +219,11 @@
                 <groupId>org.thymeleaf</groupId>
                 <artifactId>thymeleaf-spring5</artifactId>
                 <version>${thymeleaf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+                <version>${javax.annotation-api.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
