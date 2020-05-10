@@ -14,7 +14,10 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Transaction;
 import ru.geracimov.otus.java.multiprocess.backend.model.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Repository
@@ -51,40 +54,11 @@ public class RedisUserRepository implements UserRepository {
 
     @Override
     @SneakyThrows
-    public Optional<User> findById(long id) {
-        @Cleanup Jedis jedis = jedisPool.getResource();
-        final String user = jedis.get(prepareId(id));
-        return Optional.of(mapper.readValue(user, User.class));
-    }
-
-    @Override
-    @SneakyThrows
-    public Optional<User> findRandomUser() {
-        @Cleanup Jedis jedis = jedisPool.getResource();
-        val keys = jedis.keys(String.format("%s%s*", KEY, ID_DE));
-        if (keys == null || keys.size() == 0) return Optional.empty();
-        final int index = random.nextInt(keys.size());
-        final String key = keys.toArray(new String[0])[index];
-        final User user = mapper.readValue(jedis.get(key), User.class);
-        return Optional.of(user);
-    }
-
-    @Override
-    public Optional<User> findByLogin(String login) {
-        if (login == null || login.isEmpty()) return Optional.empty();
-        @Cleanup Jedis jedis = jedisPool.getResource();
-        final String userId = jedis.get(prepareLogin(login));
-        if (userId == null || userId.isEmpty()) return Optional.empty();
-        return findById(Long.parseLong(userId));
-    }
-
-    @Override
-    @SneakyThrows
-    public long saveUser(@NonNull User user) {
+    public User saveUser(@NonNull User user) {
         if (user.getId() == 0) {
             user.setId(getId());
         }
-        if (user.getLogin() == null || user.getLogin().isEmpty()){
+        if (user.getLogin() == null || user.getLogin().isEmpty()) {
             throw new UserDaoException("Login cannot be null");
         }
         @Cleanup Jedis jedis = jedisPool.getResource();
@@ -95,7 +69,7 @@ public class RedisUserRepository implements UserRepository {
         multi.set(prepareId(user.getId()), mapper.writeValueAsString(user));
         multi.set(prepareLogin(user.getLogin()), String.valueOf(user.getId()));
         multi.exec();
-        return user.getId();
+        return user;
     }
 
     private long getId() {

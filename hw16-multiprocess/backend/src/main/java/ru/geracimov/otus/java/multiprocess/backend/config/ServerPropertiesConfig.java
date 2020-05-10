@@ -9,11 +9,9 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "redis")
-public class RedisPropertiesConfig {
-    @Value("${port:6379}")
+@ConfigurationProperties(prefix = "server")
+public class ServerPropertiesConfig {
+    @Value("${port:8081}")
     private int port;
-    @Value("${host:127.0.0.1}")
-    private String host;
 
 }
