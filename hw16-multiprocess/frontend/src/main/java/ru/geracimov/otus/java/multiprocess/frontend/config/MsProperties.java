@@ -1,4 +1,4 @@
-package ru.geracimov.otus.java.multiprocess.backend.config;
+package ru.geracimov.otus.java.multiprocess.frontend.config;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,11 +9,13 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "redis")
-public class RedisPropertiesConfig {
-    @Value("${port:6379}")
-    private int port;
-    @Value("${host:127.0.0.1}")
+@ConfigurationProperties(prefix = "ms.server")
+public class MsProperties {
+
     private String host;
+
+    private int port;
+
+    private String backendName;
 
 }

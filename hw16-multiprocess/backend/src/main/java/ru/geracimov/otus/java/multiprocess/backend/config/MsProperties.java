@@ -9,9 +9,11 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "server")
-public class ServerPropertiesConfig {
-    @Value("${port:8081}")
+@ConfigurationProperties(prefix = "ms.server")
+public class MsProperties {
+
+    private String host;
+
     private int port;
 
 }

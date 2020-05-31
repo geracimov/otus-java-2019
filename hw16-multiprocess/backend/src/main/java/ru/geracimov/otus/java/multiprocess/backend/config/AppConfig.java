@@ -8,13 +8,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import redis.clients.jedis.JedisPool;
+import ru.geracimov.otus.java.multiprocess.backend.ms.MsClient;
+import ru.geracimov.otus.java.multiprocess.backend.ms.SocketMsClient;
+import ru.geracimov.otus.java.multiprocess.backend.socket.SocketClient;
 
 @Slf4j
 @Getter
 @Configuration
 @RequiredArgsConstructor
 public class AppConfig {
-    private final RedisPropertiesConfig config;
+    private final RedisProperties config;
 
     @Bean
     public JedisPool jedis() {
@@ -28,6 +31,16 @@ public class AppConfig {
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new Jdk8Module());
         return objectMapper;
+    }
+
+    @Bean
+    public SocketClient socketClient(MsProperties msPropertiesConfig, ObjectMapper objectMapper) {
+        return new SocketClient(msPropertiesConfig.getHost(), msPropertiesConfig.getPort(), objectMapper);
+    }
+
+    @Bean
+    public MsClient backendMsClient(BackendProperties backendProperties, SocketClient socketClient, ObjectMapper objectMapper) {
+        return new SocketMsClient(backendProperties.getName(), socketClient, objectMapper);
     }
 
 }
