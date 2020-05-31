@@ -37,7 +37,7 @@ public class AppConfig {
 
     @Bean
     public FrontendService frontendService(MsClient frontendMsClient) {
-        return new FrontendServiceImpl(msProperties.getBackendName(), frontendMsClient, frontendProperties);
+        return new FrontendServiceImpl(msProperties.getRecipientName(), frontendMsClient, frontendProperties);
     }
 
 }

@@ -18,15 +18,11 @@ public final class MessageSystemImpl implements MessageSystem {
 
     private final Map<String, MsClient> clientMap = new ConcurrentHashMap<>();
     private final BlockingQueue<Message> messageQueue = new ArrayBlockingQueue<>(MESSAGE_QUEUE_SIZE);
-
-    private Runnable disposeCallback;
-
     private final ExecutorService msgProcessor = Executors.newSingleThreadExecutor(runnable -> {
         Thread thread = new Thread(runnable);
         thread.setName("msg-processor-thread");
         return thread;
     });
-
     private final ExecutorService msgHandler = Executors.newFixedThreadPool(MSG_HANDLER_THREAD_LIMIT,
             new ThreadFactory() {
 
@@ -39,6 +35,7 @@ public final class MessageSystemImpl implements MessageSystem {
                     return thread;
                 }
             });
+    private Runnable disposeCallback;
 
     public MessageSystemImpl() {
         start();
@@ -159,10 +156,16 @@ public final class MessageSystemImpl implements MessageSystem {
 
     //todo need Strategy
     @Nullable
-    private MsClient getMsClient(Message message) {
+    public MsClient getMsClient(Message message) {
         final String to = message.getTo();
         final MsClient msClient = clientMap.get(to);
         if (msClient != null) return msClient;
+
+/*        final List<MsClient> collect = clientMap.values().stream()
+                .filter(client -> client.canHandle(message.getType()))
+                .collect(Collectors.toList());
+        Random random = new Random();
+        return collect.get(random.nextInt(collect.size()));*/
 
         return clientMap.values().stream()
                 .filter(client -> client.canHandle(message.getType()))

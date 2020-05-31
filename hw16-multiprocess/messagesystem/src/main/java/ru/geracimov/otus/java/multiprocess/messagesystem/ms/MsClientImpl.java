@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.SocketAddress;
+import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,7 +17,7 @@ public class MsClientImpl implements MsClient {
     private final Map<MessageType, RequestHandler> handlers = new ConcurrentHashMap<>();
     private final String name;
     private final MessageSystem messageSystem;
-    private final SocketAddress remoteAddress;
+    private final InetSocketAddress remoteAddress;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -31,8 +31,8 @@ public class MsClientImpl implements MsClient {
     }
 
     @Override
-    public String getRemoteAddress() {
-        return remoteAddress.toString();
+    public InetSocketAddress getRemoteAddress() {
+        return remoteAddress;
     }
 
     @Override

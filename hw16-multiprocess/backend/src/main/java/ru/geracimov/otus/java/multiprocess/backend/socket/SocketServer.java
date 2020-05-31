@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ru.geracimov.otus.java.multiprocess.backend.config.BackendProperties;
+import ru.geracimov.otus.java.multiprocess.backend.model.RegisterDto;
 import ru.geracimov.otus.java.multiprocess.backend.model.User;
 import ru.geracimov.otus.java.multiprocess.backend.ms.Message;
 import ru.geracimov.otus.java.multiprocess.backend.ms.MessageType;
@@ -29,6 +31,7 @@ import static ru.geracimov.otus.java.multiprocess.backend.ms.MessageType.*;
 
 @Slf4j
 @Component
+@Profile("!test")
 @RequiredArgsConstructor
 public class SocketServer implements CommandLineRunner {
     private final MsClient msClient;
@@ -47,15 +50,15 @@ public class SocketServer implements CommandLineRunner {
     public void run(String... args) {
         new Thread(this::start, "SocketServerStarter").start();
         final InetSocketAddress callbackSocket = new InetSocketAddress(backendProperties.getHost(), backendProperties.getPort());
-        Message outMsg = msClient.produceMessage("registerer", callbackSocket, MessageType.CLIENT_REGISTER);
-//        consumerMap.put(outMsg.getType(), System.out::println);
+        RegisterDto dto = new RegisterDto(callbackSocket, USER_LIST, USER_SAVE);
+        Message outMsg = msClient.produceMessage("registerer", dto, MessageType.CLIENT_REGISTER);
         msClient.sendMessage(outMsg);
     }
+
     @PreDestroy
     private void unregister() {
         final InetSocketAddress callbackSocket = new InetSocketAddress(backendProperties.getHost(), backendProperties.getPort());
         Message outMsg = msClient.produceMessage("registerer", callbackSocket, MessageType.CLIENT_UNREGISTER);
-//        consumerMap.put(outMsg.getType(), System.out::println);
         msClient.sendMessage(outMsg);
     }
 

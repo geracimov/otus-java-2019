@@ -3,7 +3,7 @@
 <head>
     <title>Пользователи</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/webjars/bootstrap/4.4.1-1/css/bootstrap.min.css">
+    <link href="/webjars/bootstrap/4.4.1-1/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="container">
@@ -29,19 +29,19 @@
         <form action="#" method="post" name="users-add">
             <div class="form-group">
                 <label for="input-name">Имя пользователя</label>
-                <input type="text" class="form-control" id="input-name" name="name" placeholder="username"
-                       minlength="1">
+                <input class="form-control" id="input-name" minlength="1" name="name" placeholder="username"
+                       type="text">
             </div>
             <div class="form-group">
                 <label for="input-login">Логин</label>
-                <input type="text" class="form-control" id="input-login" name="login" placeholder="login" minlength="1">
+                <input class="form-control" id="input-login" minlength="1" name="login" placeholder="login" type="text">
             </div>
             <div class="form-group">
                 <label for="input-password">Пароль</label>
-                <input type="text" class="form-control" id="input-password" name="password" placeholder="password">
+                <input class="form-control" id="input-password" name="password" placeholder="password" type="text">
             </div>
 
-            <button type="submit" id="send-button">Добавить</button>
+            <button id="send-button" type="submit">Добавить</button>
             <button type="reset">Очистить</button>
         </form>
     </div>

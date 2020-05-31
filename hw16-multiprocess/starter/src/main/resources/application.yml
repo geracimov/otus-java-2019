@@ -1,0 +1,26 @@
+config:
+  messageServer:
+    host: localhost
+    port: 8000
+  backendServers:
+    backend1:
+      port: 9001
+      host: localhost
+      redisHost: 172.17.0.2
+      redisPort: 6379
+    backend2:
+      port: 9002
+      host: localhost
+      redisHost: 172.17.0.2
+      redisPort: 6379
+  frontendServers:
+    frontend1:
+      port: 8001
+      host: localhost
+      httpPort: 8081
+      recipientName:
+    frontend2:
+      port: 8002
+      host: localhost
+      httpPort: 8082
+      recipientName:

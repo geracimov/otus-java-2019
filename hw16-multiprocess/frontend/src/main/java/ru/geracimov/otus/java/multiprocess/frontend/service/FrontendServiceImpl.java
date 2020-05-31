@@ -3,7 +3,9 @@ package ru.geracimov.otus.java.multiprocess.frontend.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import ru.geracimov.otus.java.multiprocess.frontend.config.FrontendProperties;
+import ru.geracimov.otus.java.multiprocess.frontend.model.RegisterDto;
 import ru.geracimov.otus.java.multiprocess.frontend.model.User;
 import ru.geracimov.otus.java.multiprocess.frontend.ms.Message;
 import ru.geracimov.otus.java.multiprocess.frontend.ms.MessageType;
@@ -18,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 @Slf4j
+@Profile("!test")
 @RequiredArgsConstructor
 public class FrontendServiceImpl implements FrontendService, CommandLineRunner {
     private final Map<UUID, Consumer<?>> consumerMap = new ConcurrentHashMap<>();
@@ -27,7 +30,8 @@ public class FrontendServiceImpl implements FrontendService, CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        Message outMsg = msClient.produceMessage("registerer", new InetSocketAddress(frontendProperties.getHost(), frontendProperties.getPort()), MessageType.CLIENT_REGISTER);
+        final InetSocketAddress inetSocketAddress = new InetSocketAddress(frontendProperties.getHost(), frontendProperties.getPort());
+        Message outMsg = msClient.produceMessage("registerer", new RegisterDto(inetSocketAddress), MessageType.CLIENT_REGISTER);
         consumerMap.put(outMsg.getId(), System.out::println);
         msClient.sendMessage(outMsg);
     }

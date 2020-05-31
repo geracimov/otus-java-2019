@@ -15,5 +15,8 @@ public interface MessageSystem {
     void start();
 
     int currentQueueSize();
+
+    MsClient getMsClient(Message message);
+
 }
 

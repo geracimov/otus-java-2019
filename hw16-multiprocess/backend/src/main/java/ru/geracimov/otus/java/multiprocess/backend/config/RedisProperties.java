@@ -12,8 +12,10 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "redis")
 public class RedisProperties {
 
+    @Value("${port:6379}")
     private int port;
 
+    @Value("${host:localhost}")
     private String host;
 
 }

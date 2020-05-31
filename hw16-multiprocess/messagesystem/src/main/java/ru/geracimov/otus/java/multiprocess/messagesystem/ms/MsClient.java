@@ -1,10 +1,12 @@
 package ru.geracimov.otus.java.multiprocess.messagesystem.ms;
 
+import java.net.InetSocketAddress;
+
 public interface MsClient {
 
     void addHandler(MessageType type, RequestHandler requestHandler);
 
-    String getRemoteAddress();
+    InetSocketAddress getRemoteAddress();
 
     boolean sendMessage(Message msg);
 

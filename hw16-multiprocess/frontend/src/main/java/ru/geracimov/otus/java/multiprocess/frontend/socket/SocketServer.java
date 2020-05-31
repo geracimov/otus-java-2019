@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ru.geracimov.otus.java.multiprocess.frontend.config.FrontendProperties;
 import ru.geracimov.otus.java.multiprocess.frontend.ms.Message;
@@ -15,6 +16,7 @@ import java.net.Socket;
 
 @Slf4j
 @Component
+@Profile("!test")
 @RequiredArgsConstructor
 public class SocketServer implements CommandLineRunner {
     private final FrontendService frontendService;
@@ -23,7 +25,7 @@ public class SocketServer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        new Thread(this::start,"SocketServerStarter").start();
+        new Thread(this::start, "SocketServerStarter").start();
     }
 
     public void start() {
@@ -47,7 +49,7 @@ public class SocketServer implements CommandLineRunner {
             final Message receivedMessage = objectMapper.readValue(is, Message.class);
 //            Message receivedMessage = (Message) ois.readObject();
             log.info("Received from {} message ID[{}]", receivedMessage.getFrom(), receivedMessage.getId());
-            frontendService.takeConsumer(receivedMessage.getSourceMessageId().get(), String.class)
+            frontendService.takeConsumer(receivedMessage.getSourceMessageId().orElse(null), String.class)
                     .ifPresent(stringConsumer -> stringConsumer.accept(new String(receivedMessage.getPayload())));
         } catch (Exception ex) {
             log.error("error", ex);
