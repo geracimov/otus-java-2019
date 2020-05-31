@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Пользователи</title>
+    <meta charset="UTF-8">
+    <link href="/webjars/bootstrap/4.4.1-1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h4>Все пользователи</h4>
+    <div class="table-responsive-sm">
+        <table class="table table-striped" id="user-table">
+            <thead class="thead-dark">
+            <tr>
+                <td scope="col">Id</td>
+                <td scope="col">Имя</td>
+                <td scope="col">Логин</td>
+                <td scope="col">Пароль</td>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container-sm">
+        <h4>Добавить пользователя</h4>
+        <form action="#" method="post" name="users-add">
+            <div class="form-group">
+                <label for="input-name">Имя пользователя</label>
+                <input class="form-control" id="input-name" minlength="1" name="name" placeholder="username"
+                       type="text">
+            </div>
+            <div class="form-group">
+                <label for="input-login">Логин</label>
+                <input class="form-control" id="input-login" minlength="1" name="login" placeholder="login" type="text">
+            </div>
+            <div class="form-group">
+                <label for="input-password">Пароль</label>
+                <input class="form-control" id="input-password" name="password" placeholder="password" type="text">
+            </div>
+
+            <button id="send-button" type="submit">Добавить</button>
+            <button type="reset">Очистить</button>
+        </form>
+    </div>
+
+    <script language="JavaScript" src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
+    <script language="JavaScript" src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
+    <script language="JavaScript" src="/webjars/jquery/3.1.1/jquery.min.js"></script>
+    <script language="JavaScript" src="/client.js"></script>
+</div>
+</body>
+</html>
