@@ -46,7 +46,7 @@
         <hibernate-core.version>5.4.8.Final</hibernate-core.version>
         <reflections.version>0.9.9</reflections.version>
         <jedis.version>3.2.0</jedis.version>
-        <jackson-core.version>2.10.3</jackson-core.version>
+        <jackson-core.version>2.12.7.1</jackson-core.version>
         <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
         <!--test-->
         <maven-jacoco.version>0.8.5</maven-jacoco.version>
